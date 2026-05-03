@@ -29,17 +29,25 @@ public static class RenameOrchestrator
 
         RenamePlanner planner = new(baseDirectory, AllowedExtensions);
         IEnumerable<RenameBatch> batches = planner.Plan(entries);
+        List<FileRenameInfo> allRenames = [];
         int totalRenamed = 0;
 
         foreach (RenameBatch batch in batches)
         {
             foreach (FileRenameInfo rename in batch.Renames)
             {
+                allRenames.Add(rename);
                 if (RenameExecutor.Execute(rename))
                 {
                     totalRenamed++;
                 }
             }
+        }
+
+        // Save manifest for undo
+        if (totalRenamed > 0)
+        {
+            ManifestManager.Save(baseDirectory, allRenames);
         }
 
         stopwatch.Stop();

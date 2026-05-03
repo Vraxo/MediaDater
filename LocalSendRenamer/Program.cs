@@ -38,6 +38,11 @@ internal static class Program
         uninstallCommand.SetHandler(PathInstaller.Uninstall);
         rootCommand.AddCommand(uninstallCommand);
 
+        // Undo command
+        Command undoCommand = new("undo", "Revert the last rename operation in the current directory");
+        undoCommand.SetHandler(() => UndoCommand.Run(Environment.CurrentDirectory));
+        rootCommand.AddCommand(undoCommand);
+
         return await rootCommand.InvokeAsync(args);
     }
 }
