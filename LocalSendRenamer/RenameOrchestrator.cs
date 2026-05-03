@@ -52,7 +52,12 @@ public static class RenameOrchestrator
 
         stopwatch.Stop();
 
-        Console.WriteLine();
+        // Only add blank line before summary if there was any scan output (logs)
+        if (totalScanned > 0)
+        {
+            Console.WriteLine();
+        }
+
         ConsoleLogger.AlignedInfo("Total", totalScanned.ToString());
         ConsoleLogger.AlignedInfo("Skipped", skippedCount.ToString());
         ConsoleLogger.Success("Renamed", totalRenamed.ToString());
