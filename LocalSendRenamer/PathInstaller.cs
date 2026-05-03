@@ -50,7 +50,7 @@ public static class PathInstaller
         string currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User)
             ?? string.Empty;
 
-        return currentPath.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList();
+        return [.. currentPath.Split(';', StringSplitOptions.RemoveEmptyEntries)];
     }
 
     private static void SetEnvironmentPaths(List<string> paths)

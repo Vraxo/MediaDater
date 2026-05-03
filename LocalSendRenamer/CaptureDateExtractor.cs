@@ -78,7 +78,14 @@ public partial class CaptureDateExtractor
 
     private static DateTime? TryParseDate(string input, string format)
     {
-        if (!DateTime.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
+        bool date = DateTime.TryParseExact(
+            input,
+            format,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out DateTime result);
+
+        if (!date)
         {
             return null;
         }

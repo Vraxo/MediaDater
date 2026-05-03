@@ -45,12 +45,16 @@ public static class UndoCommand
             }
         }
 
-        if (undone > 0)
+        if (undone == entries.Count)
         {
             ManifestManager.Delete(directory);
             Console.WriteLine();
-            string undoneWord = undone == 1 ? "Undone" : "Undone";
             ConsoleLogger.Success("Undone", undone.ToString());
+        }
+        else if (undone > 0)
+        {
+            Console.WriteLine();
+            ConsoleLogger.Warning($"Partially undone: {undone} of {entries.Count} files. Manifest preserved for retry.");
         }
         else
         {
