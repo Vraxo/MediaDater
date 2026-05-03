@@ -9,13 +9,14 @@ internal static class Program
     {
         RootCommand rootCommand = new("LocalSendRenamer – rename media files using Persian calendar capture dates");
 
-        // Rename command (default)
         Command renameCommand = new("rename", "Rename files in a directory");
+
         Argument<DirectoryInfo?> directoryArg = new(
             "directory",
             () => null,
             "Directory to process (defaults to current directory)"
         );
+
         renameCommand.AddArgument(directoryArg);
         renameCommand.SetHandler(async (InvocationContext context) =>
         {
@@ -25,20 +26,16 @@ internal static class Program
         });
         rootCommand.AddCommand(renameCommand);
 
-        // Default command (no subcommand): run rename on current directory
         rootCommand.SetHandler(async () => await RenameOrchestrator.Run(Environment.CurrentDirectory));
 
-        // Install command
         Command installCommand = new("install", "Add the current executable directory to user PATH");
         installCommand.SetHandler(PathInstaller.Install);
         rootCommand.AddCommand(installCommand);
 
-        // Uninstall command
         Command uninstallCommand = new("uninstall", "Remove the current executable directory from user PATH");
         uninstallCommand.SetHandler(PathInstaller.Uninstall);
         rootCommand.AddCommand(uninstallCommand);
 
-        // Undo command
         Command undoCommand = new("undo", "Revert the last rename operation in the current directory");
         undoCommand.SetHandler(() => UndoCommand.Run(Environment.CurrentDirectory));
         rootCommand.AddCommand(undoCommand);

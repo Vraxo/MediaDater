@@ -1,13 +1,11 @@
-﻿
-namespace LocalSendRenamer;
+﻿namespace LocalSendRenamer;
 
 public static class PathInstaller
 {
     public static void Install()
     {
-        string appDir = AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
-        string currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User) ?? string.Empty;
-        List<string> paths = currentPath.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList();
+        string appDir = GetAppDir();
+        List<string> paths = GetCurrentPaths();
 
         if (paths.Contains(appDir, StringComparer.OrdinalIgnoreCase))
         {
@@ -16,8 +14,7 @@ public static class PathInstaller
         }
 
         paths.Add(appDir);
-        string newPath = string.Join(';', paths);
-        Environment.SetEnvironmentVariable("PATH", newPath, EnvironmentVariableTarget.User);
+        SetEnvironmentPaths(paths);
 
         ConsoleLogger.Ok("Install", "Added to user PATH");
         ConsoleLogger.Info($"Directory: {appDir}");
@@ -26,9 +23,8 @@ public static class PathInstaller
 
     public static void Uninstall()
     {
-        string appDir = AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
-        string currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User) ?? string.Empty;
-        List<string> paths = currentPath.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList();
+        string appDir = GetAppDir();
+        List<string> paths = GetCurrentPaths();
 
         if (!paths.Contains(appDir, StringComparer.OrdinalIgnoreCase))
         {
@@ -37,11 +33,29 @@ public static class PathInstaller
         }
 
         paths.RemoveAll(p => p.Equals(appDir, StringComparison.OrdinalIgnoreCase));
-        string newPath = string.Join(';', paths);
-        Environment.SetEnvironmentVariable("PATH", newPath, EnvironmentVariableTarget.User);
+        SetEnvironmentPaths(paths);
 
         ConsoleLogger.Ok("Uninstall", "Removed from user PATH");
         ConsoleLogger.Info($"Directory: {appDir}");
         ConsoleLogger.Info("Restart your terminal for changes to take effect.");
+    }
+
+    private static string GetAppDir()
+    {
+        return AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
+    }
+
+    private static List<string> GetCurrentPaths()
+    {
+        string currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User)
+            ?? string.Empty;
+
+        return currentPath.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList();
+    }
+
+    private static void SetEnvironmentPaths(List<string> paths)
+    {
+        string newPath = string.Join(';', paths);
+        Environment.SetEnvironmentVariable("PATH", newPath, EnvironmentVariableTarget.User);
     }
 }

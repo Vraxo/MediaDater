@@ -27,8 +27,21 @@ public static class RenameOrchestrator
             return;
         }
 
-        RenamePlanner planner = new(baseDirectory, AllowedExtensions);
-        IEnumerable<RenameBatch> batches = planner.Plan(entries);
+        IEnumerable<RenameBatch> batches = new RenamePlanner(baseDirectory, AllowedExtensions).Plan(entries);
+        (int totalRenamed, List<FileRenameInfo>? allRenames) = ExecuteRenames(batches);
+
+        if (totalRenamed > 0)
+        {
+            ManifestManager.Save(baseDirectory, allRenames);
+        }
+
+        stopwatch.Stop();
+        PrintSummary(totalScanned, skippedCount, totalRenamed, stopwatch.Elapsed);
+        Console.ReadLine();
+    }
+
+    private static (int totalRenamed, List<FileRenameInfo> allRenames) ExecuteRenames(IEnumerable<RenameBatch> batches)
+    {
         List<FileRenameInfo> allRenames = [];
         int totalRenamed = 0;
 
@@ -37,22 +50,21 @@ public static class RenameOrchestrator
             foreach (FileRenameInfo rename in batch.Renames)
             {
                 allRenames.Add(rename);
-                if (RenameExecutor.Execute(rename))
+
+                if (!RenameExecutor.Execute(rename))
                 {
-                    totalRenamed++;
+                    continue;
                 }
+
+                totalRenamed++;
             }
         }
 
-        // Save manifest for undo
-        if (totalRenamed > 0)
-        {
-            ManifestManager.Save(baseDirectory, allRenames);
-        }
+        return (totalRenamed, allRenames);
+    }
 
-        stopwatch.Stop();
-
-        // Only add blank line before summary if there was any scan output (logs)
+    private static void PrintSummary(int totalScanned, int skippedCount, int totalRenamed, TimeSpan elapsed)
+    {
         if (totalScanned > 0)
         {
             Console.WriteLine();
@@ -61,7 +73,6 @@ public static class RenameOrchestrator
         ConsoleLogger.AlignedInfo("Total", totalScanned.ToString());
         ConsoleLogger.AlignedInfo("Skipped", skippedCount.ToString());
         ConsoleLogger.Success("Renamed", totalRenamed.ToString());
-        ConsoleLogger.Success("Time", stopwatch.Elapsed.ToString());
-        Console.ReadLine();
+        ConsoleLogger.Success("Time", elapsed.ToString());
     }
 }
