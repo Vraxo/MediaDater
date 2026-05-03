@@ -8,6 +8,10 @@ namespace LocalSendRenamer;
 
 public partial class CaptureDateExtractor
 {
+    // Plausible Gregorian year range for valid capture dates
+    private const int MinPlausibleYear = 2000;
+    private const int MaxPlausibleYear = 2030;
+
     [GeneratedRegex(@"^(IMG|VID)_(\d{8})_(\d{6})", RegexOptions.IgnoreCase)]
     private static partial Regex TimestampRegex();
 
@@ -16,8 +20,27 @@ public partial class CaptureDateExtractor
 
     public static DateTime? Extract(string filePath)
     {
-        return GetFilenameDate(filePath)
-            ?? GetMetadataDate(filePath);
+        // Try metadata first
+        DateTime? date = GetMetadataDate(filePath);
+        if (date.HasValue && IsPlausible(date.Value))
+        {
+            return date;
+        }
+
+        // Fallback to filename patterns
+        date = GetFilenameDate(filePath);
+        if (date.HasValue && IsPlausible(date.Value))
+        {
+            return date;
+        }
+
+        // No plausible date found
+        return null;
+    }
+
+    private static bool IsPlausible(DateTime date)
+    {
+        return date.Year is >= MinPlausibleYear and <= MaxPlausibleYear;
     }
 
     private static DateTime? GetFilenameDate(string filePath)
@@ -55,22 +78,12 @@ public partial class CaptureDateExtractor
 
     private static DateTime? TryParseDate(string input, string format)
     {
-        if (!IsDateValid(input, format, out DateTime result))
+        if (!DateTime.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
         {
             return null;
         }
 
         return result;
-    }
-
-    private static bool IsDateValid(string input, string format, out DateTime result)
-    {
-        return DateTime.TryParseExact(
-            input,
-            format,
-            CultureInfo.InvariantCulture,
-            DateTimeStyles.None,
-            out result);
     }
 
     private static DateTime? GetMetadataDate(string filePath)
@@ -90,15 +103,13 @@ public partial class CaptureDateExtractor
 
     private static DateTime? GetExifDate(IReadOnlyList<MetadataExtractor.Directory> directories)
     {
-        ExifSubIfdDirectory? subIfd = GetSubIfd(directories);
-
+        ExifSubIfdDirectory? subIfd = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
         if (subIfd?.TryGetDateTime(ExifDirectoryBase.TagDateTimeOriginal, out DateTime date) == true)
         {
             return date;
         }
 
-        ExifIfd0Directory? ifd0 = GetIfd0(directories);
-
+        ExifIfd0Directory? ifd0 = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
         if (ifd0?.TryGetDateTime(ExifDirectoryBase.TagDateTime, out date) == true)
         {
             return date;
@@ -107,36 +118,14 @@ public partial class CaptureDateExtractor
         return null;
     }
 
-    private static ExifSubIfdDirectory? GetSubIfd(IReadOnlyList<MetadataExtractor.Directory> directories)
-    {
-        return directories
-            .OfType<ExifSubIfdDirectory>()
-            .FirstOrDefault();
-    }
-
-    private static ExifIfd0Directory? GetIfd0(IReadOnlyList<MetadataExtractor.Directory> directories)
-    {
-        return directories
-            .OfType<ExifIfd0Directory>()
-            .FirstOrDefault();
-    }
-
     private static DateTime? GetQuickTimeDate(IReadOnlyList<MetadataExtractor.Directory> directories)
     {
-        QuickTimeMovieHeaderDirectory? movieHeader = GetMovieHeader(directories);
-
-        if ((movieHeader?.TryGetDateTime(QuickTimeMovieHeaderDirectory.TagCreated, out DateTime date)) != true)
+        QuickTimeMovieHeaderDirectory? movieHeader = directories.OfType<QuickTimeMovieHeaderDirectory>().FirstOrDefault();
+        if (movieHeader?.TryGetDateTime(QuickTimeMovieHeaderDirectory.TagCreated, out DateTime date) ?? false)
         {
-            return null;
+            return DateTime.SpecifyKind(date, DateTimeKind.Utc).ToLocalTime();
         }
 
-        return DateTime.SpecifyKind(date, DateTimeKind.Utc).ToLocalTime();
-    }
-
-    private static QuickTimeMovieHeaderDirectory? GetMovieHeader(IReadOnlyList<MetadataExtractor.Directory> directories)
-    {
-        return directories
-            .OfType<QuickTimeMovieHeaderDirectory>()
-            .FirstOrDefault();
+        return null;
     }
 }
