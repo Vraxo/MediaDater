@@ -11,15 +11,17 @@ public static class ManifestManager
 
     public static void Save(string directory, IEnumerable<FileRenameInfo> renames)
     {
-        List<RenameManifestEntry> entries = renames.Select(r => new RenameManifestEntry(r.OriginalPath, r.NewPath)).ToList();
+        List<RenameManifestEntry> entries = [.. renames.Select(r => new RenameManifestEntry(r.OriginalPath, r.NewPath))];
         string manifestPath = Path.Combine(directory, ManifestFileName);
         string json = JsonSerializer.Serialize(entries, _jsonOptions);
+
         File.WriteAllText(manifestPath, json);
     }
 
     public static List<RenameManifestEntry> Load(string directory)
     {
         string manifestPath = Path.Combine(directory, ManifestFileName);
+
         if (!File.Exists(manifestPath))
         {
             return [];
@@ -32,9 +34,12 @@ public static class ManifestManager
     public static void Delete(string directory)
     {
         string manifestPath = Path.Combine(directory, ManifestFileName);
-        if (File.Exists(manifestPath))
+
+        if (!File.Exists(manifestPath))
         {
-            File.Delete(manifestPath);
+            return;
         }
+
+        File.Delete(manifestPath);
     }
 }

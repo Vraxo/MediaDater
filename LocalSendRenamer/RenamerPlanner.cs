@@ -1,4 +1,4 @@
-﻿namespace LocalSendRenamer;
+namespace LocalSendRenamer;
 
 public class RenamePlanner
 {
@@ -47,7 +47,7 @@ public class RenamePlanner
 
     private static List<IGrouping<string, FileEntry>> GetGroups(List<FileEntry> directoryFiles)
     {
-        return [.. directoryFiles.GroupBy(e => FileNameGenerator.GetPersianDateString(e.CaptureTime))];
+        return [.. directoryFiles.GroupBy(e => FileNameGenerator.GetDateTimeKey(e.CaptureTime))];
     }
 
     private static IEnumerable<string> GetDirectories(List<FileEntry> validEntries)

@@ -11,14 +11,16 @@ public class UndoCommandTests : IDisposable
     public UndoCommandTests()
     {
         _tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+
         Directory.CreateDirectory(_tempDir);
+
         _originalConsoleOut = Console.Out;
     }
 
     public void Dispose()
     {
-        // Restore original console output
         Console.SetOut(_originalConsoleOut);
+
         if (Directory.Exists(_tempDir))
         {
             Directory.Delete(_tempDir, true);
@@ -27,11 +29,11 @@ public class UndoCommandTests : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private IDisposable CaptureConsole(out StringWriter writer)
+    private static StringWriter CaptureConsole(out StringWriter writer)
     {
-        writer = new StringWriter();
+        writer = new();
         Console.SetOut(writer);
-        return writer; // returns writer that will be disposed after test, but we restore in Dispose
+        return writer;
     }
 
     [Fact]
@@ -43,7 +45,6 @@ public class UndoCommandTests : IDisposable
             string output = writer.ToString();
             output.Should().Contain("No manifest found");
         }
-        // Console restored in Dispose after test
     }
 
     [Fact]
@@ -54,7 +55,7 @@ public class UndoCommandTests : IDisposable
         File.WriteAllText(originalPath, "content");
         File.Move(originalPath, newPath);
 
-        var renames = new List<FileRenameInfo> { new(originalPath, newPath) };
+        List<FileRenameInfo> renames = [new(originalPath, newPath)];
         ManifestManager.Save(_tempDir, renames);
 
         UndoCommand.Run(_tempDir);
@@ -68,8 +69,8 @@ public class UndoCommandTests : IDisposable
     [Fact]
     public void Undo_WithMultipleFiles_RevertsAllAndDeletesManifest()
     {
-        var entries = new List<(string orig, string newf)>();
-        var renames = new List<FileRenameInfo>();
+        List<(string orig, string newf)> entries = [];
+        List<FileRenameInfo> renames = [];
 
         for (int i = 1; i <= 3; i++)
         {
@@ -98,7 +99,7 @@ public class UndoCommandTests : IDisposable
     {
         string originalPath = Path.Combine(_tempDir, "original.jpg");
         string newPath = Path.Combine(_tempDir, "1405-02-12.jpg");
-        var renames = new List<FileRenameInfo> { new(originalPath, newPath) };
+        List<FileRenameInfo> renames = [new(originalPath, newPath)];
         ManifestManager.Save(_tempDir, renames);
 
         using (CaptureConsole(out StringWriter? writer))
@@ -116,7 +117,7 @@ public class UndoCommandTests : IDisposable
         string newPath = Path.Combine(_tempDir, "1405-02-12.jpg");
         File.WriteAllText(originalPath, "original content");
         File.WriteAllText(newPath, "new content");
-        var renames = new List<FileRenameInfo> { new(originalPath, newPath) };
+        List<FileRenameInfo> renames = [new(originalPath, newPath)];
         ManifestManager.Save(_tempDir, renames);
 
         using (CaptureConsole(out StringWriter? writer))
@@ -124,6 +125,7 @@ public class UndoCommandTests : IDisposable
             UndoCommand.Run(_tempDir);
             writer.ToString().Should().Contain("Original already exists, skipping revert");
         }
+
         ManifestManager.Load(_tempDir).Should().NotBeEmpty();
     }
 
@@ -140,7 +142,7 @@ public class UndoCommandTests : IDisposable
         File.WriteAllText(orig2, "original already here");
         File.WriteAllText(new2, "conflict new content");
 
-        var renames = new List<FileRenameInfo> { new(orig1, new1), new(orig2, new2) };
+        List<FileRenameInfo> renames = [new(orig1, new1), new(orig2, new2)];
         ManifestManager.Save(_tempDir, renames);
 
         using (CaptureConsole(out StringWriter? writer))

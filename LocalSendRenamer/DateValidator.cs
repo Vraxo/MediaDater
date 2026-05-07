@@ -9,6 +9,7 @@ public static class DateValidator
         foreach (FileEntry entry in entries)
         {
             DateTime date = entry.CaptureTime;
+
             if (date.Year < minYear || date.Year > maxYear)
             {
                 ConsoleLogger.Error($"Implausible date {date:yyyy-MM-dd} for file: {entry.Path}");

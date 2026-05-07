@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
 namespace LocalSendRenamer;
 
@@ -12,8 +12,13 @@ public static class RenameOrchestrator
         ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".mp4", ".jfif"
     ];
 
-    public static async Task Run(string baseDirectory)
+    public static async Task Run(string baseDirectory, bool dryRun = false)
     {
+        if (dryRun)
+        {
+            ConsoleLogger.Info("DRY RUN MODE – no files will be changed.\n");
+        }
+
         Console.WriteLine($"Processing directory: {baseDirectory}\n");
         Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -28,19 +33,19 @@ public static class RenameOrchestrator
         }
 
         IEnumerable<RenameBatch> batches = new RenamePlanner(baseDirectory, AllowedExtensions).Plan(entries);
-        (int totalRenamed, List<FileRenameInfo>? allRenames) = ExecuteRenames(batches);
+        (int totalRenamed, List<FileRenameInfo>? allRenames) = ExecuteRenames(batches, dryRun);
 
-        if (totalRenamed > 0)
+        if (!dryRun && totalRenamed > 0)
         {
             ManifestManager.Save(baseDirectory, allRenames);
         }
 
         stopwatch.Stop();
-        PrintSummary(totalScanned, skippedCount, totalRenamed, stopwatch.Elapsed);
+        PrintSummary(totalScanned, skippedCount, totalRenamed, stopwatch.Elapsed, dryRun);
         Console.ReadLine();
     }
 
-    private static (int totalRenamed, List<FileRenameInfo> allRenames) ExecuteRenames(IEnumerable<RenameBatch> batches)
+    private static (int totalRenamed, List<FileRenameInfo> allRenames) ExecuteRenames(IEnumerable<RenameBatch> batches, bool dryRun)
     {
         List<FileRenameInfo> allRenames = [];
         int totalRenamed = 0;
@@ -50,6 +55,14 @@ public static class RenameOrchestrator
             foreach (FileRenameInfo rename in batch.Renames)
             {
                 allRenames.Add(rename);
+
+                if (dryRun)
+                {
+                    // Simulate rename by just printing the intended operation
+                    ConsoleLogger.Info($"[DRY RUN] Would rename: {Path.GetFileName(rename.OldPath)} -> {Path.GetFileName(rename.NewPath)}");
+                    totalRenamed++;
+                    continue;
+                }
 
                 if (!RenameExecutor.Execute(rename))
                 {
@@ -63,7 +76,7 @@ public static class RenameOrchestrator
         return (totalRenamed, allRenames);
     }
 
-    private static void PrintSummary(int totalScanned, int skippedCount, int totalRenamed, TimeSpan elapsed)
+    private static void PrintSummary(int totalScanned, int skippedCount, int totalRenamed, TimeSpan elapsed, bool dryRun)
     {
         if (totalScanned > 0)
         {
@@ -74,5 +87,10 @@ public static class RenameOrchestrator
         ConsoleLogger.AlignedInfo("Skipped", skippedCount.ToString());
         ConsoleLogger.Success("Renamed", totalRenamed.ToString());
         ConsoleLogger.Success("Time", elapsed.ToString());
+
+        if (dryRun)
+        {
+            ConsoleLogger.Info("\nDry run complete – no files were actually changed.");
+        }
     }
 }

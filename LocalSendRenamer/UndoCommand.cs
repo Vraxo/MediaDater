@@ -54,7 +54,9 @@ public static class UndoCommand
         else if (undone > 0)
         {
             Console.WriteLine();
-            ConsoleLogger.Warning($"Partially undone: {undone} of {entries.Count} files. Manifest preserved for retry.");
+            ConsoleLogger.Warning(
+                $"Partially undone: {undone} of {entries.Count} files." +
+                $"Manifest preserved for retry.");
         }
         else
         {

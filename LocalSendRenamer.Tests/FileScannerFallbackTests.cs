@@ -37,7 +37,7 @@ public class FileScannerFallbackTests : IDisposable
         File.SetLastWriteTime(filePath, lastWriteTime);
 
         // Scan with allowed extensions including .txt (temporarily)
-        string[] allowedExtensions = new[] { ".txt" };
+        string[] allowedExtensions = [".txt"];
         (List<FileEntry>? entries, int skipped) = FileScanner.Scan(_tempDir, allowedExtensions);
 
         skipped.Should().Be(0);
@@ -58,7 +58,7 @@ public class FileScannerFallbackTests : IDisposable
         File.SetCreationTime(filePath, creationTime);
         File.SetLastWriteTime(filePath, lastWriteTime);
 
-        string[] allowedExtensions = new[] { ".txt" };
+        string[] allowedExtensions = [".txt"];
         (List<FileEntry>? entries, int _) = FileScanner.Scan(_tempDir, allowedExtensions);
 
         entries.Should().HaveCount(1);
@@ -73,7 +73,7 @@ public class FileScannerFallbackTests : IDisposable
         string filePath = Path.Combine(_tempDir, fileName);
         File.WriteAllText(filePath, "dummy");
 
-        string[] allowedExtensions = new[] { ".txt" };
+        string[] allowedExtensions = [".txt"];
         (List<FileEntry>? entries, int skipped) = FileScanner.Scan(_tempDir, allowedExtensions);
 
         skipped.Should().Be(1);

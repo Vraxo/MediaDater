@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 namespace LocalSendRenamer;
 
@@ -70,5 +70,10 @@ public class FileNameGenerator
         int day = PersianCalendar.GetDayOfMonth(time);
 
         return $"{year:0000}-{month:00}-{day:00}";
+    }
+
+    public static string GetDateTimeKey(DateTime time)
+    {
+        return $"{GetPersianDateString(time)}_{time:HH-mm-ss}";
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.CommandLine;
-using System.CommandLine.Invocation;
+using System.CommandLine;
 
 namespace LocalSendRenamer;
 
@@ -17,12 +16,16 @@ internal static class Program
             "Directory to process (defaults to current directory)"
         );
 
+        Option<bool> dryRunOption = new("--dry-run", "Perform a trial run with no changes made");
+        renameCommand.AddOption(dryRunOption);
+
         renameCommand.AddArgument(directoryArg);
-        renameCommand.SetHandler(async (InvocationContext context) =>
+        renameCommand.SetHandler(async (context) =>
         {
             DirectoryInfo? dirInfo = context.ParseResult.GetValueForArgument(directoryArg);
             string baseDirectory = dirInfo?.FullName ?? Environment.CurrentDirectory;
-            await RenameOrchestrator.Run(baseDirectory);
+            bool dryRun = context.ParseResult.GetValueForOption(dryRunOption);
+            await RenameOrchestrator.Run(baseDirectory, dryRun);
         });
         rootCommand.AddCommand(renameCommand);
 

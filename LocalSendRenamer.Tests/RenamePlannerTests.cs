@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Xunit;
 
 namespace LocalSendRenamer.Tests;
@@ -46,12 +46,31 @@ public class RenamePlannerTests
     }
 
     [Fact]
-    public void Plan_SameDateDifferentFiles_GroupsByDate()
+    public void Plan_DifferentTimesSameDate_SeparateBatches()
     {
         FileEntry[] entries =
         [
             new("C:\\Photos\\morning.jpg", new(2023, 3, 21, 8, 0, 0)),
             new("C:\\Photos\\evening.jpg", new(2023, 3, 21, 18, 0, 0))
+        ];
+
+        RenamePlanner planner = new("C:\\", [".jpg"]);
+
+        List<RenameBatch> result = [.. planner.Plan(entries)];
+
+        // Each different time yields separate batch
+        result.Should().HaveCount(2);
+        result[0].Renames.Should().HaveCount(1);
+        result[1].Renames.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void Plan_SameSecond_SingleBatchWithCounter()
+    {
+        FileEntry[] entries =
+        [
+            new("C:\\Photos\\first.jpg", new(2023, 3, 21, 14, 30, 45)),
+            new("C:\\Photos\\second.jpg", new(2023, 3, 21, 14, 30, 45))
         ];
 
         RenamePlanner planner = new("C:\\", [".jpg"]);

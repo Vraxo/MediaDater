@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Xunit;
 
 namespace LocalSendRenamer.Tests;
@@ -24,65 +24,66 @@ public class FileNameGeneratorTests : IDisposable
     }
 
     [Fact]
-    public void Generate_SingleFile_UsesDateOnly()
+    public void Generate_SingleFileUsesDateTimeKey()
     {
-        FileEntry[] files = [new("test.jpg", new(2023, 3, 21))];
-        string dateKey = "1402-01-01";
+        FileEntry[] files = [new("test.jpg", new(2023, 3, 21, 14, 30, 45))];
+        string dateTimeKey = "1402-01-01_14-30-45";
 
         FileNameGenerator generator = new("C:\\");
-        List<FileRenameInfo> result = [.. generator.Generate(dateKey, files)];
+        List<FileRenameInfo> result = [.. generator.Generate(dateTimeKey, files)];
 
         result.Should().HaveCount(1);
-        result[0].NewPath.Should().EndWith("1402-01-01.jpg");
+        result[0].NewPath.Should().EndWith("1402-01-01_14-30-45.jpg");
     }
 
     [Fact]
-    public void Generate_MultipleFiles_AppendsCounter()
+    public void Generate_MultipleFilesSameSecond_AppendsCounter()
     {
+        // Both files at same second (14:30:45)
         FileEntry[] files =
         [
-            new("A.jpg", new(2023, 3, 21, 10, 0, 0)),
-            new("B.jpg", new(2023, 3, 21, 11, 0, 0))
+            new("A.jpg", new(2023, 3, 21, 14, 30, 45)),
+            new("B.jpg", new(2023, 3, 21, 14, 30, 45))
         ];
 
-        string dateKey = "1402-01-01";
+        string dateTimeKey = "1402-01-01_14-30-45";
 
         FileNameGenerator generator = new("C:\\");
-        List<FileRenameInfo> result = [.. generator.Generate(dateKey, files)];
+        List<FileRenameInfo> result = [.. generator.Generate(dateTimeKey, files)];
 
         result.Should().HaveCount(2);
-        result[0].NewPath.Should().EndWith("1402-01-01-1.jpg");
-        result[1].NewPath.Should().EndWith("1402-01-01-2.jpg");
+        result[0].NewPath.Should().EndWith("1402-01-01_14-30-45-1.jpg");
+        result[1].NewPath.Should().EndWith("1402-01-01_14-30-45-2.jpg");
     }
 
     [Fact]
     public void Generate_FileExists_AppendsCounter()
     {
-        File.WriteAllText(Path.Combine(_tempDir, "1402-01-01.jpg"), "existing");
-        FileEntry[] files = [new("test.jpg", new(2023, 3, 21))];
-        string dateKey = "1402-01-01";
+        string dateTimeKey = "1402-01-01_14-30-45";
+        File.WriteAllText(Path.Combine(_tempDir, dateTimeKey + ".jpg"), "existing");
+        FileEntry[] files = [new("test.jpg", new(2023, 3, 21, 14, 30, 45))];
 
         FileNameGenerator generator = new(_tempDir);
-        List<FileRenameInfo> result = [.. generator.Generate(dateKey, files)];
+        List<FileRenameInfo> result = [.. generator.Generate(dateTimeKey, files)];
 
         result.Should().HaveCount(1);
-        result[0].NewPath.Should().EndWith("1402-01-01-1.jpg");
+        result[0].NewPath.Should().EndWith(dateTimeKey + "-1.jpg");
     }
 
     [Fact]
     public void Generate_MultipleCollisions_FindsNextCounter()
     {
-        File.WriteAllText(Path.Combine(_tempDir, "1402-01-01.jpg"), "existing1");
-        File.WriteAllText(Path.Combine(_tempDir, "1402-01-01-1.jpg"), "existing2");
-        File.WriteAllText(Path.Combine(_tempDir, "1402-01-01-2.jpg"), "existing3");
+        string dateTimeKey = "1402-01-01_14-30-45";
+        File.WriteAllText(Path.Combine(_tempDir, dateTimeKey + ".jpg"), "existing1");
+        File.WriteAllText(Path.Combine(_tempDir, dateTimeKey + "-1.jpg"), "existing2");
+        File.WriteAllText(Path.Combine(_tempDir, dateTimeKey + "-2.jpg"), "existing3");
 
-        FileEntry[] files = [new("test.jpg", new(2023, 3, 21))];
-        string dateKey = "1402-01-01";
+        FileEntry[] files = [new("test.jpg", new(2023, 3, 21, 14, 30, 45))];
 
         FileNameGenerator generator = new(_tempDir);
-        List<FileRenameInfo> result = [.. generator.Generate(dateKey, files)];
+        List<FileRenameInfo> result = [.. generator.Generate(dateTimeKey, files)];
 
         result.Should().HaveCount(1);
-        result[0].NewPath.Should().EndWith("1402-01-01-3.jpg");
+        result[0].NewPath.Should().EndWith(dateTimeKey + "-3.jpg");
     }
 }
