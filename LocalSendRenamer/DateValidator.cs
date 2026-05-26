@@ -10,11 +10,13 @@ public static class DateValidator
         {
             DateTime date = entry.CaptureTime;
 
-            if (date.Year < minYear || date.Year > maxYear)
+            if (date.Year >= minYear && date.Year <= maxYear)
             {
-                ConsoleLogger.Error($"Implausible date {date:yyyy-MM-dd} for file: {entry.Path}");
-                allOk = false;
+                continue;
             }
+
+            ConsoleLogger.Error($"Implausible date {date:yyyy-MM-dd} for file: {entry.Path}");
+            allOk = false;
         }
 
         return allOk;

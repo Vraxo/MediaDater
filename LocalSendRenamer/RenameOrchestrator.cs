@@ -59,7 +59,7 @@ public static class RenameOrchestrator
                 if (dryRun)
                 {
                     // Simulate rename by just printing the intended operation
-                    ConsoleLogger.Info($"[DRY RUN] Would rename: {Path.GetFileName(rename.OldPath)} -> {Path.GetFileName(rename.NewPath)}");
+                    ConsoleLogger.Info($"[DRY RUN] Would rename: {Path.GetFileName(rename.OriginalPath)} -> {Path.GetFileName(rename.NewPath)}");
                     totalRenamed++;
                     continue;
                 }
@@ -88,9 +88,11 @@ public static class RenameOrchestrator
         ConsoleLogger.Success("Renamed", totalRenamed.ToString());
         ConsoleLogger.Success("Time", elapsed.ToString());
 
-        if (dryRun)
+        if (!dryRun)
         {
-            ConsoleLogger.Info("\nDry run complete – no files were actually changed.");
+            return;
         }
+
+        ConsoleLogger.Info("\nDry run complete – no files were actually changed.");
     }
 }

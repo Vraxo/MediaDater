@@ -3,8 +3,60 @@
   "WorkspaceRootPath": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\renameorchestrator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\renameorchestrator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DFE018D0-91D8-DD18-151B-A5D56B7FD116}|LocalSendRenamer.Tests\\LocalSendRenamer.Tests.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer.tests\\capturedateextractortests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DFE018D0-91D8-DD18-151B-A5D56B7FD116}|LocalSendRenamer.Tests\\LocalSendRenamer.Tests.csproj|solutionrelative:localsendrenamer.tests\\capturedateextractortests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\renamebatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\renamebatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\renamerplanner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\renamerplanner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\undocommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\undocommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\capturedateextractor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\capturedateextractor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\consolelogger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\consolelogger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\datevalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\datevalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\fileentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\fileentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\filescanner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\filescanner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\filerenameinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\filerenameinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\manifestmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\manifestmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|e:\\visual studio\\utils\\localsendrenamer\\localsendrenamer\\renameexecutor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{82496478-8D91-C14E-3079-5297C9FA57D6}|LocalSendRenamer\\LocalSendRenamer.csproj|solutionrelative:localsendrenamer\\renameexecutor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -67,15 +119,172 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "RenameOrchestrator.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\RenameOrchestrator.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer\\RenameOrchestrator.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\RenameOrchestrator.cs",
+              "RelativeToolTip": "LocalSendRenamer\\RenameOrchestrator.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAmwD0AAABmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T22:47:55.143Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CaptureDateExtractorTests.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer.Tests\\CaptureDateExtractorTests.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer.Tests\\CaptureDateExtractorTests.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer.Tests\\CaptureDateExtractorTests.cs",
+              "RelativeToolTip": "LocalSendRenamer.Tests\\CaptureDateExtractorTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T16:42:36.569Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "RenameBatch.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\RenameBatch.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer\\RenameBatch.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\RenameBatch.cs",
+              "RelativeToolTip": "LocalSendRenamer\\RenameBatch.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T16:42:32.301Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "RenamerPlanner.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\RenamerPlanner.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer\\RenamerPlanner.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\RenamerPlanner.cs",
+              "RelativeToolTip": "LocalSendRenamer\\RenamerPlanner.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T16:42:20.792Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CaptureDateExtractor.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\CaptureDateExtractor.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer\\CaptureDateExtractor.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\CaptureDateExtractor.cs",
+              "RelativeToolTip": "LocalSendRenamer\\CaptureDateExtractor.cs",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T16:42:11.042Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\Program.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer\\Program.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\Program.cs",
+              "RelativeToolTip": "LocalSendRenamer\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T16:41:37.512Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ConsoleLogger.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\ConsoleLogger.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer\\ConsoleLogger.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\ConsoleLogger.cs",
+              "RelativeToolTip": "LocalSendRenamer\\ConsoleLogger.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T16:42:10.004Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "DateValidator.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\DateValidator.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer\\DateValidator.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\DateValidator.cs",
+              "RelativeToolTip": "LocalSendRenamer\\DateValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T16:41:53.765Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "UndoCommand.cs",
               "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\UndoCommand.cs",
               "RelativeDocumentMoniker": "LocalSendRenamer\\UndoCommand.cs",
               "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\UndoCommand.cs",
               "RelativeToolTip": "LocalSendRenamer\\UndoCommand.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAowD8AAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-06T17:57:20.042Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-06T17:57:20.042Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "FileEntry.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\FileEntry.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer\\FileEntry.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\FileEntry.cs",
+              "RelativeToolTip": "LocalSendRenamer\\FileEntry.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T16:41:53.012Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "FileRenameInfo.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\FileRenameInfo.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer\\FileRenameInfo.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\FileRenameInfo.cs",
+              "RelativeToolTip": "LocalSendRenamer\\FileRenameInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T16:41:46.026Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "FileScanner.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\FileScanner.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer\\FileScanner.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\FileScanner.cs",
+              "RelativeToolTip": "LocalSendRenamer\\FileScanner.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAAFAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T16:41:45.586Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ManifestManager.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\ManifestManager.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer\\ManifestManager.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\ManifestManager.cs",
+              "RelativeToolTip": "LocalSendRenamer\\ManifestManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T16:41:43.185Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "RenameExecutor.cs",
+              "DocumentMoniker": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\RenameExecutor.cs",
+              "RelativeDocumentMoniker": "LocalSendRenamer\\RenameExecutor.cs",
+              "ToolTip": "E:\\Visual Studio\\Utils\\LocalSendRenamer\\LocalSendRenamer\\RenameExecutor.cs",
+              "RelativeToolTip": "LocalSendRenamer\\RenameExecutor.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T16:41:35.652Z"
             }
           ]
         },
