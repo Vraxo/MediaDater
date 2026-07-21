@@ -1,63 +1,49 @@
-﻿namespace LocalSendRenamer;
+﻿using Spectre.Console;
+
+namespace LocalSendRenamer;
 
 public static class ConsoleLogger
 {
-    // Catppuccin Mocha ANSI colors
-    private const string Reset = "\x1b[0m";
-    private const string White = "\x1b[38;2;255;255;255m";
-    private const string Teal = "\x1b[38;2;148;226;213m";
-    private const string Blue = "\x1b[38;2;137;180;250m";
-    private const string Green = "\x1b[38;2;166;218;149m";
-    private const string Yellow = "\x1b[38;2;249;226;175m";
-    private const string Red = "\x1b[38;2;243;139;168m";
-    private const string Mauve = "\x1b[38;2;203;166;247m";
-
-    // Semantic mappings
-    private const string ColorSuccess = Green;
-    private const string ColorError = Red;
-    private const string ColorWarning = Yellow;
-    private const string ColorInfo = Blue;
-    private const string ColorFilename = Teal;
-    private const string ColorSummary = Mauve;
-
     private const int TagWidth = 7;
     private const int AlignWidth = 7;
 
-    private static string GetTag(string color, string text)
+    private static string GetTagMarkup(string color, string text)
     {
-        string tag = $"[{color}{text}{Reset}]";
+        string tag = $"[[[{color}]{text}[/]]]";
         int padding = TagWidth - (text.Length + 2);
         return padding > 0 ? tag + new string(' ', padding) : tag;
     }
 
     public static void Ok(string originalName, string newName)
     {
-        Console.WriteLine($"{GetTag(ColorSuccess, "OK")}{ColorFilename}{originalName}{Reset} -> {ColorFilename}{newName}{Reset}");
+        string escapedOrig = Markup.Escape(originalName);
+        string escapedNew = Markup.Escape(newName);
+        AnsiConsole.MarkupLine($"{GetTagMarkup("green", "OK")}[teal]{escapedOrig}[/] -> [teal]{escapedNew}[/]");
     }
 
     public static void Error(string message)
     {
-        Console.WriteLine($"{GetTag(ColorError, "ERROR")}{ColorError}{message}{Reset}");
+        AnsiConsole.MarkupLine($"{GetTagMarkup("red", "ERROR")}[red]{Markup.Escape(message)}[/]");
     }
 
     public static void Warning(string message)
     {
-        Console.WriteLine($"{GetTag(ColorWarning, "WARN")}{ColorWarning}{message}{Reset}");
+        AnsiConsole.MarkupLine($"{GetTagMarkup("yellow", "WARN")}[yellow]{Markup.Escape(message)}[/]");
     }
 
     public static void Info(string message)
     {
-        Console.WriteLine($"{ColorInfo}{message}{Reset}");
+        AnsiConsole.MarkupLine($"[blue]{Markup.Escape(message)}[/]");
     }
 
     public static void LogAligned(string label, string value)
     {
         string paddedLabel = label.PadRight(AlignWidth);
-        Console.WriteLine($"{ColorSummary}{paddedLabel}: {White}{value}{Reset}");
+        AnsiConsole.MarkupLine($"[purple]{Markup.Escape(paddedLabel)}[/]: [white]{Markup.Escape(value)}[/]");
     }
 
     public static void Skip(string filename)
     {
-        Console.WriteLine($"{GetTag(ColorInfo, "SKIP")}{White}{filename}{Reset}");
+        AnsiConsole.MarkupLine($"{GetTagMarkup("blue", "SKIP")}[white]{Markup.Escape(filename)}[/]");
     }
 }

@@ -16,7 +16,10 @@ internal static class Program
             Arity = ArgumentArity.ZeroOrOne
         };
 
-        Option<bool> dryRunOption = new("--dry-run", "Perform a trial run with no changes made");
+        Option<bool> dryRunOption = new("--dry-run")
+        {
+            Description = "Perform a trial run with no changes made"
+        };
 
         renameCommand.Options.Add(dryRunOption);
         renameCommand.Arguments.Add(directoryArg);
