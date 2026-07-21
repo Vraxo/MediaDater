@@ -11,10 +11,6 @@ namespace LocalSendRenamer;
 
 public partial class CaptureDateExtractor
 {
-    // Plausible Gregorian year range for valid capture dates
-    private const int MinPlausibleYear = 2000;
-    private const int MaxPlausibleYear = 2030;
-
     [GeneratedRegex(@"^(IMG|VID)_(\d{8})_(\d{6})", RegexOptions.IgnoreCase)]
     private static partial Regex TimestampRegex();
 
@@ -23,27 +19,24 @@ public partial class CaptureDateExtractor
 
     public static DateTime? Extract(string filePath)
     {
-        // Try metadata first
         DateTime? date = GetMetadataDate(filePath);
         if (date.HasValue && IsPlausible(date.Value))
         {
             return date;
         }
 
-        // Fallback to filename patterns
         date = GetFilenameDate(filePath);
         if (date.HasValue && IsPlausible(date.Value))
         {
             return date;
         }
 
-        // No plausible date found
         return null;
     }
 
     private static bool IsPlausible(DateTime date)
     {
-        return date.Year is >= MinPlausibleYear and <= MaxPlausibleYear;
+        return date.Year is >= DateValidator.MinPlausibleYear and <= DateValidator.MaxPlausibleYear;
     }
 
     private static DateTime? GetFilenameDate(string filePath)
@@ -81,19 +74,14 @@ public partial class CaptureDateExtractor
 
     private static DateTime? TryParseDate(string input, string format)
     {
-        bool date = DateTime.TryParseExact(
+        bool success = DateTime.TryParseExact(
             input,
             format,
             CultureInfo.InvariantCulture,
             DateTimeStyles.None,
             out DateTime result);
 
-        if (!date)
-        {
-            return null;
-        }
-
-        return result;
+        return success ? result : null;
     }
 
     private static DateTime? GetMetadataDate(string filePath)
@@ -269,18 +257,24 @@ namespace LocalSendRenamer;
 
 public static class DateValidator
 {
-    public static bool AreAllPlausible(IEnumerable<FileEntry> entries, int minYear, int maxYear)
+    public const int MinPlausibleYear = 2000;
+    public const int MaxPlausibleYear = 2030;
+
+    public static bool AreAllPlausible(IEnumerable<FileEntry> entries, int minYear = MinPlausibleYear, int maxYear = MaxPlausibleYear)
     {
         bool allOk = true;
 
         foreach (FileEntry entry in entries)
         {
             DateTime date = entry.CaptureTime;
-            if (date.Year < minYear || date.Year > maxYear)
+
+            if (date.Year >= minYear && date.Year <= maxYear)
             {
-                ConsoleLogger.Error($"Implausible date {date:yyyy-MM-dd} for file: {entry.Path}");
-                allOk = false;
+                continue;
             }
+
+            ConsoleLogger.Error($"Implausible date {date:yyyy-MM-dd} for file: {entry.Path}");
+            allOk = false;
         }
 
         return allOk;
@@ -376,6 +370,11 @@ public class FileNameGenerator
 
         return $"{year:0000}-{month:00}-{day:00}";
     }
+
+    public static string GetDateTimeKey(DateTime time)
+    {
+        return $"{GetPersianDateString(time)}_{time:HH-mm-ss}";
+    }
 }
 ```
 
@@ -400,7 +399,7 @@ namespace LocalSendRenamer;
 
 public static partial class FileScanner
 {
-    [GeneratedRegex(@"^\d{4}-\d{2}-\d{2}(?:-\d+)?$", RegexOptions.Compiled)]
+    [GeneratedRegex(@"^\d{4}-\d{2}-\d{2}(?:_\d{2}-\d{2}-\d{2})?(?:-\d+)?$", RegexOptions.Compiled)]
     private static partial Regex AlreadyRenamedRegex();
 
     private static IEnumerable<string> GetDirectories(string baseDirectory)
@@ -498,8 +497,8 @@ public static partial class FileScanner
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MetadataExtractor" Version="2.9.0-rc2" />
-		<PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+		<PackageReference Include="MetadataExtractor" Version="2.9.3" />
+		<PackageReference Include="System.CommandLine" Version="2.0.10" />
 	</ItemGroup>
 
 </Project>
@@ -648,12 +647,16 @@ internal static class Program
             "Directory to process (defaults to current directory)"
         );
 
+        Option<bool> dryRunOption = new("--dry-run", "Perform a trial run with no changes made");
+        renameCommand.AddOption(dryRunOption);
+
         renameCommand.AddArgument(directoryArg);
-        renameCommand.SetHandler(async context =>
+        renameCommand.SetHandler(async (context) =>
         {
             DirectoryInfo? dirInfo = context.ParseResult.GetValueForArgument(directoryArg);
             string baseDirectory = dirInfo?.FullName ?? Environment.CurrentDirectory;
-            await RenameOrchestrator.Run(baseDirectory);
+            bool dryRun = context.ParseResult.GetValueForOption(dryRunOption);
+            await RenameOrchestrator.Run(baseDirectory, dryRun);
         });
         rootCommand.AddCommand(renameCommand);
 
@@ -738,23 +741,25 @@ namespace LocalSendRenamer;
 
 public static class RenameOrchestrator
 {
-    private const int MinPlausibleYear = 2000;
-    private const int MaxPlausibleYear = 2030;
-
     private static readonly string[] AllowedExtensions =
     [
         ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".mp4", ".jfif"
     ];
 
-    public static async Task Run(string baseDirectory)
+    public static async Task Run(string baseDirectory, bool dryRun = false)
     {
+        if (dryRun)
+        {
+            ConsoleLogger.Info("DRY RUN MODE – no files will be changed.\n");
+        }
+
         Console.WriteLine($"Processing directory: {baseDirectory}\n");
         Stopwatch stopwatch = Stopwatch.StartNew();
 
         (List<FileEntry>? entries, int skippedCount) = FileScanner.Scan(baseDirectory, AllowedExtensions);
         int totalScanned = skippedCount + entries.Count;
 
-        if (!DateValidator.AreAllPlausible(entries, MinPlausibleYear, MaxPlausibleYear))
+        if (!DateValidator.AreAllPlausible(entries))
         {
             ConsoleLogger.Error("\nAborting: no files were renamed.");
             Console.ReadLine();
@@ -762,19 +767,19 @@ public static class RenameOrchestrator
         }
 
         IEnumerable<RenameBatch> batches = new RenamePlanner(baseDirectory, AllowedExtensions).Plan(entries);
-        (int totalRenamed, List<FileRenameInfo>? allRenames) = ExecuteRenames(batches);
+        (int totalRenamed, List<FileRenameInfo>? allRenames) = ExecuteRenames(batches, dryRun);
 
-        if (totalRenamed > 0)
+        if (!dryRun && totalRenamed > 0)
         {
             ManifestManager.Save(baseDirectory, allRenames);
         }
 
         stopwatch.Stop();
-        PrintSummary(totalScanned, skippedCount, totalRenamed, stopwatch.Elapsed);
+        PrintSummary(totalScanned, skippedCount, totalRenamed, stopwatch.Elapsed, dryRun);
         Console.ReadLine();
     }
 
-    private static (int totalRenamed, List<FileRenameInfo> allRenames) ExecuteRenames(IEnumerable<RenameBatch> batches)
+    private static (int totalRenamed, List<FileRenameInfo> allRenames) ExecuteRenames(IEnumerable<RenameBatch> batches, bool dryRun)
     {
         List<FileRenameInfo> allRenames = [];
         int totalRenamed = 0;
@@ -784,6 +789,13 @@ public static class RenameOrchestrator
             foreach (FileRenameInfo rename in batch.Renames)
             {
                 allRenames.Add(rename);
+
+                if (dryRun)
+                {
+                    ConsoleLogger.Info($"[DRY RUN] Would rename: {Path.GetFileName(rename.OriginalPath)} -> {Path.GetFileName(rename.NewPath)}");
+                    totalRenamed++;
+                    continue;
+                }
 
                 if (!RenameExecutor.Execute(rename))
                 {
@@ -797,7 +809,7 @@ public static class RenameOrchestrator
         return (totalRenamed, allRenames);
     }
 
-    private static void PrintSummary(int totalScanned, int skippedCount, int totalRenamed, TimeSpan elapsed)
+    private static void PrintSummary(int totalScanned, int skippedCount, int totalRenamed, TimeSpan elapsed, bool dryRun)
     {
         if (totalScanned > 0)
         {
@@ -808,6 +820,13 @@ public static class RenameOrchestrator
         ConsoleLogger.AlignedInfo("Skipped", skippedCount.ToString());
         ConsoleLogger.Success("Renamed", totalRenamed.ToString());
         ConsoleLogger.Success("Time", elapsed.ToString());
+
+        if (!dryRun)
+        {
+            return;
+        }
+
+        ConsoleLogger.Info("\nDry run complete – no files were actually changed.");
     }
 }
 ```
@@ -866,7 +885,7 @@ public class RenamePlanner
 
     private static List<IGrouping<string, FileEntry>> GetGroups(List<FileEntry> directoryFiles)
     {
-        return [.. directoryFiles.GroupBy(e => FileNameGenerator.GetPersianDateString(e.CaptureTime))];
+        return [.. directoryFiles.GroupBy(e => FileNameGenerator.GetDateTimeKey(e.CaptureTime))];
     }
 
     private static IEnumerable<string> GetDirectories(List<FileEntry> validEntries)
@@ -946,7 +965,9 @@ public static class UndoCommand
         else if (undone > 0)
         {
             Console.WriteLine();
-            ConsoleLogger.Warning($"Partially undone: {undone} of {entries.Count} files. Manifest preserved for retry.");
+            ConsoleLogger.Warning(
+                $"Partially undone: {undone} of {entries.Count} files." +
+                $"Manifest preserved for retry.");
         }
         else
         {
@@ -1126,66 +1147,67 @@ public class FileNameGeneratorTests : IDisposable
     }
 
     [Fact]
-    public void Generate_SingleFile_UsesDateOnly()
+    public void Generate_SingleFileUsesDateTimeKey()
     {
-        FileEntry[] files = [new("test.jpg", new(2023, 3, 21))];
-        string dateKey = "1402-01-01";
+        FileEntry[] files = [new("test.jpg", new(2023, 3, 21, 14, 30, 45))];
+        string dateTimeKey = "1402-01-01_14-30-45";
 
         FileNameGenerator generator = new("C:\\");
-        List<FileRenameInfo> result = [.. generator.Generate(dateKey, files)];
+        List<FileRenameInfo> result = [.. generator.Generate(dateTimeKey, files)];
 
         result.Should().HaveCount(1);
-        result[0].NewPath.Should().EndWith("1402-01-01.jpg");
+        result[0].NewPath.Should().EndWith("1402-01-01_14-30-45.jpg");
     }
 
     [Fact]
-    public void Generate_MultipleFiles_AppendsCounter()
+    public void Generate_MultipleFilesSameSecond_AppendsCounter()
     {
+        // Both files at same second (14:30:45)
         FileEntry[] files =
         [
-            new("A.jpg", new(2023, 3, 21, 10, 0, 0)),
-            new("B.jpg", new(2023, 3, 21, 11, 0, 0))
+            new("A.jpg", new(2023, 3, 21, 14, 30, 45)),
+            new("B.jpg", new(2023, 3, 21, 14, 30, 45))
         ];
 
-        string dateKey = "1402-01-01";
+        string dateTimeKey = "1402-01-01_14-30-45";
 
         FileNameGenerator generator = new("C:\\");
-        List<FileRenameInfo> result = [.. generator.Generate(dateKey, files)];
+        List<FileRenameInfo> result = [.. generator.Generate(dateTimeKey, files)];
 
         result.Should().HaveCount(2);
-        result[0].NewPath.Should().EndWith("1402-01-01-1.jpg");
-        result[1].NewPath.Should().EndWith("1402-01-01-2.jpg");
+        result[0].NewPath.Should().EndWith("1402-01-01_14-30-45-1.jpg");
+        result[1].NewPath.Should().EndWith("1402-01-01_14-30-45-2.jpg");
     }
 
     [Fact]
     public void Generate_FileExists_AppendsCounter()
     {
-        File.WriteAllText(Path.Combine(_tempDir, "1402-01-01.jpg"), "existing");
-        FileEntry[] files = [new("test.jpg", new(2023, 3, 21))];
-        string dateKey = "1402-01-01";
+        string dateTimeKey = "1402-01-01_14-30-45";
+        File.WriteAllText(Path.Combine(_tempDir, dateTimeKey + ".jpg"), "existing");
+        FileEntry[] files = [new("test.jpg", new(2023, 3, 21, 14, 30, 45))];
 
         FileNameGenerator generator = new(_tempDir);
-        List<FileRenameInfo> result = [.. generator.Generate(dateKey, files)];
+        List<FileRenameInfo> result = [.. generator.Generate(dateTimeKey, files)];
 
         result.Should().HaveCount(1);
-        result[0].NewPath.Should().EndWith("1402-01-01-1.jpg");
+        result[0].NewPath.Should().EndWith(dateTimeKey + "-1.jpg");
     }
 
     [Fact]
     public void Generate_MultipleCollisions_FindsNextCounter()
     {
-        File.WriteAllText(Path.Combine(_tempDir, "1402-01-01.jpg"), "existing1");
-        File.WriteAllText(Path.Combine(_tempDir, "1402-01-01-1.jpg"), "existing2");
-        File.WriteAllText(Path.Combine(_tempDir, "1402-01-01-2.jpg"), "existing3");
+        string dateTimeKey = "1402-01-01_14-30-45";
+        File.WriteAllText(Path.Combine(_tempDir, dateTimeKey + ".jpg"), "existing1");
+        File.WriteAllText(Path.Combine(_tempDir, dateTimeKey + "-1.jpg"), "existing2");
+        File.WriteAllText(Path.Combine(_tempDir, dateTimeKey + "-2.jpg"), "existing3");
 
-        FileEntry[] files = [new("test.jpg", new(2023, 3, 21))];
-        string dateKey = "1402-01-01";
+        FileEntry[] files = [new("test.jpg", new(2023, 3, 21, 14, 30, 45))];
 
         FileNameGenerator generator = new(_tempDir);
-        List<FileRenameInfo> result = [.. generator.Generate(dateKey, files)];
+        List<FileRenameInfo> result = [.. generator.Generate(dateTimeKey, files)];
 
         result.Should().HaveCount(1);
-        result[0].NewPath.Should().EndWith("1402-01-01-3.jpg");
+        result[0].NewPath.Should().EndWith(dateTimeKey + "-3.jpg");
     }
 }
 ```
@@ -1294,10 +1316,13 @@ public class FileScannerFallbackTests : IDisposable
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" Version="6.12.0" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-		<PackageReference Include="xunit" Version="2.6.2" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="2.5.4" />
+		<PackageReference Include="FluentAssertions" Version="8.10.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="xunit.v3" Version="3.2.2" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -1463,12 +1488,31 @@ public class RenamePlannerTests
     }
 
     [Fact]
-    public void Plan_SameDateDifferentFiles_GroupsByDate()
+    public void Plan_DifferentTimesSameDate_SeparateBatches()
     {
         FileEntry[] entries =
         [
             new("C:\\Photos\\morning.jpg", new(2023, 3, 21, 8, 0, 0)),
             new("C:\\Photos\\evening.jpg", new(2023, 3, 21, 18, 0, 0))
+        ];
+
+        RenamePlanner planner = new("C:\\", [".jpg"]);
+
+        List<RenameBatch> result = [.. planner.Plan(entries)];
+
+        // Each different time yields separate batch
+        result.Should().HaveCount(2);
+        result[0].Renames.Should().HaveCount(1);
+        result[1].Renames.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void Plan_SameSecond_SingleBatchWithCounter()
+    {
+        FileEntry[] entries =
+        [
+            new("C:\\Photos\\first.jpg", new(2023, 3, 21, 14, 30, 45)),
+            new("C:\\Photos\\second.jpg", new(2023, 3, 21, 14, 30, 45))
         ];
 
         RenamePlanner planner = new("C:\\", [".jpg"]);

@@ -4,9 +4,6 @@ namespace LocalSendRenamer;
 
 public static class RenameOrchestrator
 {
-    private const int MinPlausibleYear = 2000;
-    private const int MaxPlausibleYear = 2030;
-
     private static readonly string[] AllowedExtensions =
     [
         ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".mp4", ".jfif"
@@ -25,7 +22,7 @@ public static class RenameOrchestrator
         (List<FileEntry>? entries, int skippedCount) = FileScanner.Scan(baseDirectory, AllowedExtensions);
         int totalScanned = skippedCount + entries.Count;
 
-        if (!DateValidator.AreAllPlausible(entries, MinPlausibleYear, MaxPlausibleYear))
+        if (!DateValidator.AreAllPlausible(entries))
         {
             ConsoleLogger.Error("\nAborting: no files were renamed.");
             Console.ReadLine();
@@ -58,7 +55,6 @@ public static class RenameOrchestrator
 
                 if (dryRun)
                 {
-                    // Simulate rename by just printing the intended operation
                     ConsoleLogger.Info($"[DRY RUN] Would rename: {Path.GetFileName(rename.OriginalPath)} -> {Path.GetFileName(rename.NewPath)}");
                     totalRenamed++;
                     continue;

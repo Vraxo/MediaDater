@@ -10,39 +10,43 @@ internal static class Program
 
         Command renameCommand = new("rename", "Rename files in a directory");
 
-        Argument<DirectoryInfo?> directoryArg = new(
-            "directory",
-            () => null,
-            "Directory to process (defaults to current directory)"
-        );
+        Argument<DirectoryInfo?> directoryArg = new("directory")
+        {
+            Description = "Directory to process (defaults to current directory)",
+            Arity = ArgumentArity.ZeroOrOne
+        };
 
         Option<bool> dryRunOption = new("--dry-run", "Perform a trial run with no changes made");
-        renameCommand.AddOption(dryRunOption);
 
-        renameCommand.AddArgument(directoryArg);
-        renameCommand.SetHandler(async (context) =>
+        renameCommand.Options.Add(dryRunOption);
+        renameCommand.Arguments.Add(directoryArg);
+
+        renameCommand.SetAction(async (parseResult, cancellationToken) =>
         {
-            DirectoryInfo? dirInfo = context.ParseResult.GetValueForArgument(directoryArg);
+            DirectoryInfo? dirInfo = parseResult.GetValue(directoryArg);
             string baseDirectory = dirInfo?.FullName ?? Environment.CurrentDirectory;
-            bool dryRun = context.ParseResult.GetValueForOption(dryRunOption);
+            bool dryRun = parseResult.GetValue(dryRunOption);
             await RenameOrchestrator.Run(baseDirectory, dryRun);
         });
-        rootCommand.AddCommand(renameCommand);
 
-        rootCommand.SetHandler(async () => await RenameOrchestrator.Run(Environment.CurrentDirectory));
+        rootCommand.Subcommands.Add(renameCommand);
+
+        rootCommand.SetAction(async (parseResult, cancellationToken) =>
+            await RenameOrchestrator.Run(Environment.CurrentDirectory));
 
         Command installCommand = new("install", "Add the current executable directory to user PATH");
-        installCommand.SetHandler(PathInstaller.Install);
-        rootCommand.AddCommand(installCommand);
+        installCommand.SetAction(parseResult => PathInstaller.Install());
+        rootCommand.Subcommands.Add(installCommand);
 
         Command uninstallCommand = new("uninstall", "Remove the current executable directory from user PATH");
-        uninstallCommand.SetHandler(PathInstaller.Uninstall);
-        rootCommand.AddCommand(uninstallCommand);
+        uninstallCommand.SetAction(parseResult => PathInstaller.Uninstall());
+        rootCommand.Subcommands.Add(uninstallCommand);
 
         Command undoCommand = new("undo", "Revert the last rename operation in the current directory");
-        undoCommand.SetHandler(() => UndoCommand.Run(Environment.CurrentDirectory));
-        rootCommand.AddCommand(undoCommand);
+        undoCommand.SetAction(parseResult => UndoCommand.Run(Environment.CurrentDirectory));
+        rootCommand.Subcommands.Add(undoCommand);
 
-        return await rootCommand.InvokeAsync(args);
+        ParseResult parseResult = rootCommand.Parse(args);
+        return await parseResult.InvokeAsync();
     }
 }

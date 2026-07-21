@@ -1,2 +1,2 @@
-coalesce --config coalesce.yaml
+coalesce
 pause

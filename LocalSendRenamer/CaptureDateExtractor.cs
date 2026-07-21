@@ -8,10 +8,6 @@ namespace LocalSendRenamer;
 
 public partial class CaptureDateExtractor
 {
-    // Plausible Gregorian year range for valid capture dates
-    private const int MinPlausibleYear = 2000;
-    private const int MaxPlausibleYear = 2030;
-
     [GeneratedRegex(@"^(IMG|VID)_(\d{8})_(\d{6})", RegexOptions.IgnoreCase)]
     private static partial Regex TimestampRegex();
 
@@ -20,27 +16,24 @@ public partial class CaptureDateExtractor
 
     public static DateTime? Extract(string filePath)
     {
-        // Try metadata first
         DateTime? date = GetMetadataDate(filePath);
         if (date.HasValue && IsPlausible(date.Value))
         {
             return date;
         }
 
-        // Fallback to filename patterns
         date = GetFilenameDate(filePath);
         if (date.HasValue && IsPlausible(date.Value))
         {
             return date;
         }
 
-        // No plausible date found
         return null;
     }
 
     private static bool IsPlausible(DateTime date)
     {
-        return date.Year is >= MinPlausibleYear and <= MaxPlausibleYear;
+        return date.Year is >= DateValidator.MinPlausibleYear and <= DateValidator.MaxPlausibleYear;
     }
 
     private static DateTime? GetFilenameDate(string filePath)
@@ -78,19 +71,14 @@ public partial class CaptureDateExtractor
 
     private static DateTime? TryParseDate(string input, string format)
     {
-        bool date = DateTime.TryParseExact(
+        bool success = DateTime.TryParseExact(
             input,
             format,
             CultureInfo.InvariantCulture,
             DateTimeStyles.None,
             out DateTime result);
 
-        if (!date)
-        {
-            return null;
-        }
-
-        return result;
+        return success ? result : null;
     }
 
     private static DateTime? GetMetadataDate(string filePath)

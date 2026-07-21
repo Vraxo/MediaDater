@@ -2,7 +2,10 @@
 
 public static class DateValidator
 {
-    public static bool AreAllPlausible(IEnumerable<FileEntry> entries, int minYear, int maxYear)
+    public const int MinPlausibleYear = 2000;
+    public const int MaxPlausibleYear = 2030;
+
+    public static bool AreAllPlausible(IEnumerable<FileEntry> entries, int minYear = MinPlausibleYear, int maxYear = MaxPlausibleYear)
     {
         bool allOk = true;
 
