@@ -2,16 +2,9 @@ using System.Globalization;
 
 namespace LocalSendRenamer;
 
-public class FileNameGenerator
+public class FileNameGenerator(string directoryPath)
 {
     private static readonly PersianCalendar PersianCalendar = new();
-
-    private readonly string _directoryPath;
-
-    public FileNameGenerator(string directoryPath)
-    {
-        _directoryPath = directoryPath;
-    }
 
     public IEnumerable<FileRenameInfo> Generate(string dateKey, IEnumerable<FileEntry> files)
     {
@@ -41,7 +34,7 @@ public class FileNameGenerator
 
     private string ResolveUniquePath(string baseName, string extension)
     {
-        string targetPath = Path.Combine(_directoryPath, baseName + extension);
+        string targetPath = Path.Combine(directoryPath, baseName + extension);
 
         if (!File.Exists(targetPath))
         {
@@ -52,7 +45,7 @@ public class FileNameGenerator
 
         while (true)
         {
-            string candidate = Path.Combine(_directoryPath, $"{baseName}-{counter}{extension}");
+            string candidate = Path.Combine(directoryPath, $"{baseName}-{counter}{extension}");
 
             if (!File.Exists(candidate))
             {

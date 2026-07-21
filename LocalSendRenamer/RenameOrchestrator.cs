@@ -19,7 +19,7 @@ public static class RenameOrchestrator
         Console.WriteLine($"Processing directory: {baseDirectory}\n");
         Stopwatch stopwatch = Stopwatch.StartNew();
 
-        (List<FileEntry>? entries, int skippedCount) = FileScanner.Scan(baseDirectory, AllowedExtensions);
+        (List<FileEntry> entries, int skippedCount) = FileScanner.Scan(baseDirectory, AllowedExtensions);
         int totalScanned = skippedCount + entries.Count;
 
         if (!DateValidator.AreAllPlausible(entries))
@@ -30,7 +30,7 @@ public static class RenameOrchestrator
         }
 
         IEnumerable<RenameBatch> batches = new RenamePlanner(baseDirectory, AllowedExtensions).Plan(entries);
-        (int totalRenamed, List<FileRenameInfo>? allRenames) = ExecuteRenames(batches, dryRun);
+        (int totalRenamed, List<FileRenameInfo> allRenames) = ExecuteRenames(batches, dryRun);
 
         if (!dryRun && totalRenamed > 0)
         {
@@ -79,10 +79,10 @@ public static class RenameOrchestrator
             Console.WriteLine();
         }
 
-        ConsoleLogger.AlignedInfo("Total", totalScanned.ToString());
-        ConsoleLogger.AlignedInfo("Skipped", skippedCount.ToString());
-        ConsoleLogger.Success("Renamed", totalRenamed.ToString());
-        ConsoleLogger.Success("Time", elapsed.ToString());
+        ConsoleLogger.LogAligned("Total", totalScanned.ToString());
+        ConsoleLogger.LogAligned("Skipped", skippedCount.ToString());
+        ConsoleLogger.LogAligned("Renamed", totalRenamed.ToString());
+        ConsoleLogger.LogAligned("Time", elapsed.ToString());
 
         if (!dryRun)
         {

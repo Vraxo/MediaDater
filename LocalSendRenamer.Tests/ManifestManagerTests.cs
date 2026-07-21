@@ -47,7 +47,7 @@ public class ManifestManagerTests : IDisposable
     [Fact]
     public void Load_WhenManifestExists_ReturnsEntries()
     {
-        List<RenameManifestEntry> originalEntries =
+        List<FileRenameInfo> originalEntries =
         [
             new(@"C:\test\old1.jpg", @"C:\test\new1.jpg"),
             new(@"C:\test\old2.mp4", @"C:\test\new2.mp4")
@@ -56,7 +56,7 @@ public class ManifestManagerTests : IDisposable
         string json = System.Text.Json.JsonSerializer.Serialize(originalEntries);
         File.WriteAllText(manifestPath, json);
 
-        List<RenameManifestEntry> loaded = ManifestManager.Load(_tempDir);
+        List<FileRenameInfo> loaded = ManifestManager.Load(_tempDir);
 
         loaded.Should().HaveCount(2);
         loaded[0].OriginalPath.Should().Be(@"C:\test\old1.jpg");
@@ -68,7 +68,7 @@ public class ManifestManagerTests : IDisposable
     [Fact]
     public void Load_WhenNoManifest_ReturnsEmptyList()
     {
-        List<RenameManifestEntry> loaded = ManifestManager.Load(_tempDir);
+        List<FileRenameInfo> loaded = ManifestManager.Load(_tempDir);
         loaded.Should().BeEmpty();
     }
 

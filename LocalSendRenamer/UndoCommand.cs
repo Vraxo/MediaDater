@@ -1,11 +1,10 @@
-﻿
-namespace LocalSendRenamer;
+﻿namespace LocalSendRenamer;
 
 public static class UndoCommand
 {
     public static void Run(string directory)
     {
-        List<RenameManifestEntry> entries = ManifestManager.Load(directory);
+        List<FileRenameInfo> entries = ManifestManager.Load(directory);
         if (entries.Count == 0)
         {
             ConsoleLogger.Warning("No manifest found. Nothing to undo.");
@@ -16,7 +15,7 @@ public static class UndoCommand
         ConsoleLogger.Info($"Found {entries.Count} {fileWord} to revert.\n");
         int undone = 0;
 
-        foreach (RenameManifestEntry entry in entries)
+        foreach (FileRenameInfo entry in entries)
         {
             string originalName = Path.GetFileName(entry.OriginalPath);
             string newName = Path.GetFileName(entry.NewPath);
@@ -36,7 +35,7 @@ public static class UndoCommand
             try
             {
                 File.Move(entry.NewPath, entry.OriginalPath);
-                ConsoleLogger.Ok(originalName, newName); // reversed: original -> new
+                ConsoleLogger.Ok(originalName, newName);
                 undone++;
             }
             catch (Exception ex)
@@ -49,14 +48,14 @@ public static class UndoCommand
         {
             ManifestManager.Delete(directory);
             Console.WriteLine();
-            ConsoleLogger.Success("Undone", undone.ToString());
+            ConsoleLogger.LogAligned("Undone", undone.ToString());
         }
         else if (undone > 0)
         {
             Console.WriteLine();
             ConsoleLogger.Warning(
-                $"Partially undone: {undone} of {entries.Count} files." +
-                $"Manifest preserved for retry.");
+                $"Partially undone: {undone} of {entries.Count} files. " +
+                "Manifest preserved for retry.");
         }
         else
         {
