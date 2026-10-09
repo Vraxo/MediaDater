@@ -6,7 +6,15 @@ public static class RenameOrchestrator
 {
     private static readonly string[] AllowedExtensions =
     [
-        ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".mp4", ".jfif"
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".bmp",
+        ".gif",
+        ".mp4",
+        ".jfif",
+        ".webp",
+        ".heic"
     ];
 
     public static async Task Run(string baseDirectory, bool dryRun = false)

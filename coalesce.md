@@ -134,116 +134,53 @@ public partial class CaptureDateExtractor
 ### `LocalSendRenamer\ConsoleLogger.cs`
 
 ```csharp
+using Spectre.Console;
+
 namespace LocalSendRenamer;
 
 public static class ConsoleLogger
 {
-    // Catppuccin Mocha ANSI colors
-    private const string Reset = "\x1b[0m";
-    private const string White = "\x1b[38;2;255;255;255m";
-    private const string Teal = "\x1b[38;2;148;226;213m";
-    private const string Blue = "\x1b[38;2;137;180;250m";
-    private const string Green = "\x1b[38;2;166;218;149m";
-    private const string Yellow = "\x1b[38;2;249;226;175m";
-    private const string Red = "\x1b[38;2;243;139;168m";
-    private const string Mauve = "\x1b[38;2;203;166;247m";   // #cba6f7
-
-    // Semantic mappings
-    private const string ColorSuccess = Green;
-    private const string ColorError = Red;
-    private const string ColorWarning = Yellow;
-    private const string ColorInfo = Blue;
-    private const string ColorFilename = Teal;
-    private const string ColorSummary = Mauve;   // used for summary labels
-
-    // Fixed width for the entire tag including brackets (e.g., "[ERROR]" = 7)
     private const int TagWidth = 7;
-    private const int AlignWidth = 7; // for summary lines
+    private const int AlignWidth = 7;
 
-    // Helper: write left-aligned tag, then pad spaces after the bracket to reach TagWidth
-    private static void WriteTag(string color, string text)
+    private static string GetTagMarkup(string color, string text)
     {
-        Console.Write("[");
-        Console.Write(color);
-        Console.Write(text);
-        Console.Write(Reset);
-        Console.Write("]");
-        int visibleLength = text.Length + 2; // +2 for brackets
-        int padding = TagWidth - visibleLength;
-        if (padding > 0)
-        {
-            Console.Write(new string(' ', padding));
-        }
-        // No extra space – message starts immediately after padding
+        string tag = $"[[[{color}]{text}[/]]]";
+        int padding = TagWidth - (text.Length + 2);
+        return padding > 0 ? tag + new string(' ', padding) : tag;
     }
 
     public static void Ok(string originalName, string newName)
     {
-        WriteTag(ColorSuccess, "OK");
-        Console.Write(ColorFilename);
-        Console.Write(originalName);
-        Console.Write(Reset);
-        Console.Write(" -> ");
-        Console.Write(ColorFilename);
-        Console.Write(newName);
-        Console.Write(Reset);
-        Console.WriteLine();
+        string escapedOrig = Markup.Escape(originalName);
+        string escapedNew = Markup.Escape(newName);
+        AnsiConsole.MarkupLine($"{GetTagMarkup("green", "OK")}[teal]{escapedOrig}[/] -> [teal]{escapedNew}[/]");
     }
 
     public static void Error(string message)
     {
-        WriteTag(ColorError, "ERROR");
-        Console.Write(ColorError);
-        Console.WriteLine(message);
-        Console.Write(Reset);
+        AnsiConsole.MarkupLine($"{GetTagMarkup("red", "ERROR")}[red]{Markup.Escape(message)}[/]");
     }
 
     public static void Warning(string message)
     {
-        WriteTag(ColorWarning, "WARN");
-        Console.Write(ColorWarning);
-        Console.WriteLine(message);
-        Console.Write(Reset);
+        AnsiConsole.MarkupLine($"{GetTagMarkup("yellow", "WARN")}[yellow]{Markup.Escape(message)}[/]");
     }
 
     public static void Info(string message)
     {
-        Console.Write(ColorInfo);
-        Console.WriteLine(message);
-        Console.Write(Reset);
+        AnsiConsole.MarkupLine($"[blue]{Markup.Escape(message)}[/]");
     }
 
-    public static void AlignedInfo(string label, string value)
+    public static void LogAligned(string label, string value)
     {
         string paddedLabel = label.PadRight(AlignWidth);
-        Console.Write(ColorSummary);
-        Console.Write(paddedLabel);
-        Console.Write(": ");
-        Console.Write(White);
-        Console.Write(value);
-        Console.Write(Reset);
-        Console.WriteLine();
-    }
-
-    public static void Success(string label, string value)
-    {
-        string paddedLabel = label.PadRight(AlignWidth);
-        Console.Write(ColorSummary);
-        Console.Write(paddedLabel);
-        Console.Write(": ");
-        Console.Write(White);
-        Console.Write(value);
-        Console.Write(Reset);
-        Console.WriteLine();
+        AnsiConsole.MarkupLine($"[purple]{Markup.Escape(paddedLabel)}[/]: [white]{Markup.Escape(value)}[/]");
     }
 
     public static void Skip(string filename)
     {
-        WriteTag(ColorInfo, "SKIP");
-        Console.Write(White);
-        Console.Write(filename);
-        Console.Write(Reset);
-        Console.WriteLine();
+        AnsiConsole.MarkupLine($"{GetTagMarkup("blue", "SKIP")}[white]{Markup.Escape(filename)}[/]");
     }
 }
 ```
@@ -301,16 +238,9 @@ using System.Globalization;
 
 namespace LocalSendRenamer;
 
-public class FileNameGenerator
+public class FileNameGenerator(string directoryPath)
 {
     private static readonly PersianCalendar PersianCalendar = new();
-
-    private readonly string _directoryPath;
-
-    public FileNameGenerator(string directoryPath)
-    {
-        _directoryPath = directoryPath;
-    }
 
     public IEnumerable<FileRenameInfo> Generate(string dateKey, IEnumerable<FileEntry> files)
     {
@@ -340,7 +270,7 @@ public class FileNameGenerator
 
     private string ResolveUniquePath(string baseName, string extension)
     {
-        string targetPath = Path.Combine(_directoryPath, baseName + extension);
+        string targetPath = Path.Combine(directoryPath, baseName + extension);
 
         if (!File.Exists(targetPath))
         {
@@ -351,7 +281,7 @@ public class FileNameGenerator
 
         while (true)
         {
-            string candidate = Path.Combine(_directoryPath, $"{baseName}-{counter}{extension}");
+            string candidate = Path.Combine(directoryPath, $"{baseName}-{counter}{extension}");
 
             if (!File.Exists(candidate))
             {
@@ -499,6 +429,7 @@ public static partial class FileScanner
 	<ItemGroup>
 		<PackageReference Include="MetadataExtractor" Version="2.9.3" />
 		<PackageReference Include="System.CommandLine" Version="2.0.10" />
+		<PackageReference Include="Spectre.Console" Version="0.50.0" />
 	</ItemGroup>
 
 </Project>
@@ -513,23 +444,20 @@ using System.Text.Json;
 
 namespace LocalSendRenamer;
 
-public record RenameManifestEntry(string OriginalPath, string NewPath);
-
 public static class ManifestManager
 {
     private const string ManifestFileName = ".rename_manifest.json";
-    private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
     public static void Save(string directory, IEnumerable<FileRenameInfo> renames)
     {
-        List<RenameManifestEntry> entries = [.. renames.Select(r => new RenameManifestEntry(r.OriginalPath, r.NewPath))];
         string manifestPath = Path.Combine(directory, ManifestFileName);
-        string json = JsonSerializer.Serialize(entries, _jsonOptions);
+        string json = JsonSerializer.Serialize(renames, JsonOptions);
 
         File.WriteAllText(manifestPath, json);
     }
 
-    public static List<RenameManifestEntry> Load(string directory)
+    public static List<FileRenameInfo> Load(string directory)
     {
         string manifestPath = Path.Combine(directory, ManifestFileName);
 
@@ -539,19 +467,17 @@ public static class ManifestManager
         }
 
         string json = File.ReadAllText(manifestPath);
-        return JsonSerializer.Deserialize<List<RenameManifestEntry>>(json) ?? [];
+        return JsonSerializer.Deserialize<List<FileRenameInfo>>(json) ?? [];
     }
 
     public static void Delete(string directory)
     {
         string manifestPath = Path.Combine(directory, ManifestFileName);
 
-        if (!File.Exists(manifestPath))
+        if (File.Exists(manifestPath))
         {
-            return;
+            File.Delete(manifestPath);
         }
-
-        File.Delete(manifestPath);
     }
 }
 ```
@@ -647,7 +573,10 @@ internal static class Program
             Arity = ArgumentArity.ZeroOrOne
         };
 
-        Option<bool> dryRunOption = new("--dry-run", "Perform a trial run with no changes made");
+        Option<bool> dryRunOption = new("--dry-run")
+        {
+            Description = "Perform a trial run with no changes made"
+        };
 
         renameCommand.Options.Add(dryRunOption);
         renameCommand.Arguments.Add(directoryArg);
@@ -760,7 +689,7 @@ public static class RenameOrchestrator
         Console.WriteLine($"Processing directory: {baseDirectory}\n");
         Stopwatch stopwatch = Stopwatch.StartNew();
 
-        (List<FileEntry>? entries, int skippedCount) = FileScanner.Scan(baseDirectory, AllowedExtensions);
+        (List<FileEntry> entries, int skippedCount) = FileScanner.Scan(baseDirectory, AllowedExtensions);
         int totalScanned = skippedCount + entries.Count;
 
         if (!DateValidator.AreAllPlausible(entries))
@@ -771,7 +700,7 @@ public static class RenameOrchestrator
         }
 
         IEnumerable<RenameBatch> batches = new RenamePlanner(baseDirectory, AllowedExtensions).Plan(entries);
-        (int totalRenamed, List<FileRenameInfo>? allRenames) = ExecuteRenames(batches, dryRun);
+        (int totalRenamed, List<FileRenameInfo> allRenames) = ExecuteRenames(batches, dryRun);
 
         if (!dryRun && totalRenamed > 0)
         {
@@ -820,10 +749,10 @@ public static class RenameOrchestrator
             Console.WriteLine();
         }
 
-        ConsoleLogger.AlignedInfo("Total", totalScanned.ToString());
-        ConsoleLogger.AlignedInfo("Skipped", skippedCount.ToString());
-        ConsoleLogger.Success("Renamed", totalRenamed.ToString());
-        ConsoleLogger.Success("Time", elapsed.ToString());
+        ConsoleLogger.LogAligned("Total", totalScanned.ToString());
+        ConsoleLogger.LogAligned("Skipped", skippedCount.ToString());
+        ConsoleLogger.LogAligned("Renamed", totalRenamed.ToString());
+        ConsoleLogger.LogAligned("Time", elapsed.ToString());
 
         if (!dryRun)
         {
@@ -913,14 +842,13 @@ public class RenamePlanner
 ### `LocalSendRenamer\UndoCommand.cs`
 
 ```csharp
-
 namespace LocalSendRenamer;
 
 public static class UndoCommand
 {
     public static void Run(string directory)
     {
-        List<RenameManifestEntry> entries = ManifestManager.Load(directory);
+        List<FileRenameInfo> entries = ManifestManager.Load(directory);
         if (entries.Count == 0)
         {
             ConsoleLogger.Warning("No manifest found. Nothing to undo.");
@@ -931,7 +859,7 @@ public static class UndoCommand
         ConsoleLogger.Info($"Found {entries.Count} {fileWord} to revert.\n");
         int undone = 0;
 
-        foreach (RenameManifestEntry entry in entries)
+        foreach (FileRenameInfo entry in entries)
         {
             string originalName = Path.GetFileName(entry.OriginalPath);
             string newName = Path.GetFileName(entry.NewPath);
@@ -951,7 +879,7 @@ public static class UndoCommand
             try
             {
                 File.Move(entry.NewPath, entry.OriginalPath);
-                ConsoleLogger.Ok(originalName, newName); // reversed: original -> new
+                ConsoleLogger.Ok(originalName, newName);
                 undone++;
             }
             catch (Exception ex)
@@ -964,14 +892,14 @@ public static class UndoCommand
         {
             ManifestManager.Delete(directory);
             Console.WriteLine();
-            ConsoleLogger.Success("Undone", undone.ToString());
+            ConsoleLogger.LogAligned("Undone", undone.ToString());
         }
         else if (undone > 0)
         {
             Console.WriteLine();
             ConsoleLogger.Warning(
-                $"Partially undone: {undone} of {entries.Count} files." +
-                $"Manifest preserved for retry.");
+                $"Partially undone: {undone} of {entries.Count} files. " +
+                "Manifest preserved for retry.");
         }
         else
         {
@@ -1390,7 +1318,7 @@ public class ManifestManagerTests : IDisposable
     [Fact]
     public void Load_WhenManifestExists_ReturnsEntries()
     {
-        List<RenameManifestEntry> originalEntries =
+        List<FileRenameInfo> originalEntries =
         [
             new(@"C:\test\old1.jpg", @"C:\test\new1.jpg"),
             new(@"C:\test\old2.mp4", @"C:\test\new2.mp4")
@@ -1399,7 +1327,7 @@ public class ManifestManagerTests : IDisposable
         string json = System.Text.Json.JsonSerializer.Serialize(originalEntries);
         File.WriteAllText(manifestPath, json);
 
-        List<RenameManifestEntry> loaded = ManifestManager.Load(_tempDir);
+        List<FileRenameInfo> loaded = ManifestManager.Load(_tempDir);
 
         loaded.Should().HaveCount(2);
         loaded[0].OriginalPath.Should().Be(@"C:\test\old1.jpg");
@@ -1411,7 +1339,7 @@ public class ManifestManagerTests : IDisposable
     [Fact]
     public void Load_WhenNoManifest_ReturnsEmptyList()
     {
-        List<RenameManifestEntry> loaded = ManifestManager.Load(_tempDir);
+        List<FileRenameInfo> loaded = ManifestManager.Load(_tempDir);
         loaded.Should().BeEmpty();
     }
 
