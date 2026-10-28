@@ -2,7 +2,7 @@
 
 namespace MediaDater;
 
-public static class ConsoleLogger
+internal static class ConsoleLogger
 {
     private const int TagWidth = 7;
     private const int AlignWidth = 7;

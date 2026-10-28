@@ -1,6 +1,6 @@
 ﻿namespace MediaDater;
 
-public static class DateValidator
+internal static class DateValidator
 {
     public const int MinPlausibleYear = 2000;
     public const int MaxPlausibleYear = 2030;

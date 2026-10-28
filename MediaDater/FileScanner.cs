@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace MediaDater;
 
-public static partial class FileScanner
+internal static partial class FileScanner
 {
     [GeneratedRegex(@"^\d{4}-\d{2}-\d{2}(?:_\d{2}-\d{2}-\d{2})?(?:-\d+)?$", RegexOptions.Compiled)]
     private static partial Regex AlreadyRenamedRegex();

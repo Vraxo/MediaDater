@@ -1,3 +1,3 @@
 ﻿namespace MediaDater;
 
-public record FileRenameInfo(string OriginalPath, string NewPath);
+internal record FileRenameInfo(string OriginalPath, string NewPath);

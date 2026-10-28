@@ -1,6 +1,6 @@
 namespace MediaDater;
 
-public class RenamePlanner
+internal class RenamePlanner
 {
     private readonly string _baseDirectory;
     private readonly HashSet<string> _allowedExtensions;

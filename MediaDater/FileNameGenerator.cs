@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace MediaDater;
 
-public class FileNameGenerator(string directoryPath)
+internal class FileNameGenerator(string directoryPath)
 {
     private static readonly PersianCalendar PersianCalendar = new();
 
