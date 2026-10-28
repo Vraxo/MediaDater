@@ -1,12 +1,12 @@
 using System.CommandLine;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 internal static class Program
 {
     private static async Task<int> Main(string[] args)
     {
-        RootCommand rootCommand = new("LocalSendRenamer – rename media files using Persian calendar capture dates");
+        RootCommand rootCommand = new("MediaDater – rename media files using Persian calendar capture dates");
 
         Command renameCommand = new("rename", "Rename files in a directory");
 

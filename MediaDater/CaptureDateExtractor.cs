@@ -4,7 +4,7 @@ using MetadataExtractor.Formats.QuickTime;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public partial class CaptureDateExtractor
 {

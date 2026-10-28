@@ -1,7 +1,0 @@
-<Solution>
-  <Folder Name="/Solution Items/">
-    <File Path=".editorconfig" />
-  </Folder>
-  <Project Path="LocalSendRenamer.Tests/LocalSendRenamer.Tests.csproj" />
-  <Project Path="LocalSendRenamer/LocalSendRenamer.csproj" />
-</Solution>

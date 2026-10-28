@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public static partial class FileScanner
 {

@@ -1,4 +1,4 @@
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public class RenamePlanner
 {

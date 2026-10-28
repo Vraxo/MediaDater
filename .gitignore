@@ -54,3 +54,8 @@ TestResult.xml
 nunit-*.xml
 
 .vs/
+
+# Coalesce output and local tooling
+/coalesce.md
+/coalesce.toml
+/coalesce-run.cmd

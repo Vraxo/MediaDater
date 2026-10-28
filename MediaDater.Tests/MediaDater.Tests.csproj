@@ -18,7 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\LocalSendRenamer\LocalSendRenamer.csproj" />
+		<ProjectReference Include="..\MediaDater\MediaDater.csproj" />
 	</ItemGroup>
 
 </Project>
