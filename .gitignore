@@ -11,6 +11,6 @@ TestResults/
 .vs/
 
 # Local tooling
-/coalesce.md
-/coalesce.toml
-/coalesce-run.cmd
+coalesce.md
+coalesce.toml
+coalesce-run.cmd
