@@ -2,7 +2,7 @@
 
 namespace MediaDater;
 
-public static class ManifestManager
+internal static class ManifestManager
 {
     private const string ManifestFileName = ".rename_manifest.json";
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };

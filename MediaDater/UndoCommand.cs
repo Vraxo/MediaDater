@@ -1,6 +1,6 @@
 ﻿namespace MediaDater;
 
-public static class UndoCommand
+internal static class UndoCommand
 {
     public static void Run(string directory)
     {

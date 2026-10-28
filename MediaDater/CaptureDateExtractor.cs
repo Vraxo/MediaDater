@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace MediaDater;
 
-public partial class CaptureDateExtractor
+internal partial class CaptureDateExtractor
 {
     [GeneratedRegex(@"^(IMG|VID)_(\d{8})_(\d{6})", RegexOptions.IgnoreCase)]
     private static partial Regex TimestampRegex();

@@ -1,6 +1,6 @@
 ﻿namespace MediaDater;
 
-public static class RenameExecutor
+internal static class RenameExecutor
 {
     private static bool PathsAreSame(FileRenameInfo rename)
     {

@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace MediaDater;
 
-public static class RenameOrchestrator
+internal static class RenameOrchestrator
 {
     private static readonly string[] AllowedExtensions =
     [
