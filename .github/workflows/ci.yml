@@ -1,0 +1,32 @@
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore MediaDater.slnx
+
+      - name: Build
+        run: dotnet build MediaDater.slnx --configuration Release --no-restore
+
+      - name: Test
+        # MediaDater.Tests references Microsoft.NET.Test.Sdk and
+        # xunit.runner.visualstudio, so VSTest can run the suite through
+        # `dotnet test` rather than invoking the test assembly directly.
+        run: dotnet test MediaDater.slnx --configuration Release --no-build
