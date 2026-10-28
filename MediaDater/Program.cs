@@ -37,14 +37,6 @@ internal static class Program
         rootCommand.SetAction(async (parseResult, cancellationToken) =>
             await RenameOrchestrator.Run(Environment.CurrentDirectory));
 
-        Command installCommand = new("install", "Add the current executable directory to user PATH");
-        installCommand.SetAction(parseResult => PathInstaller.Install());
-        rootCommand.Subcommands.Add(installCommand);
-
-        Command uninstallCommand = new("uninstall", "Remove the current executable directory from user PATH");
-        uninstallCommand.SetAction(parseResult => PathInstaller.Uninstall());
-        rootCommand.Subcommands.Add(uninstallCommand);
-
         Command undoCommand = new("undo", "Revert the last rename operation in the current directory");
         undoCommand.SetAction(parseResult => UndoCommand.Run(Environment.CurrentDirectory));
         rootCommand.Subcommands.Add(undoCommand);

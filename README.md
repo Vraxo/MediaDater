@@ -24,6 +24,8 @@ dotnet build MediaDater.slnx
 
 Build output goes to the SDK's artifacts layout, `artifacts/bin/<project>/<configuration>/`, configured once in `Directory.Build.props`.
 
+To run it from any directory, add that output folder to your `PATH` yourself.
+
 ## 🚀 Usage
 
 | Command | Description |
@@ -32,8 +34,6 @@ Build output goes to the SDK's artifacts layout, `artifacts/bin/<project>/<confi
 | `MediaDater rename [directory]` | Rename files in `directory` (defaults to the current one) |
 | `MediaDater rename [directory] --dry-run` | List what would be renamed, change nothing |
 | `MediaDater undo` | Revert the last run recorded in the current directory |
-| `MediaDater install` | Add the executable's folder to the user `PATH` |
-| `MediaDater uninstall` | Remove that folder from the user `PATH` |
 
 ```powershell
 dotnet run --project MediaDater -- rename "D:\Photos" --dry-run
@@ -98,6 +98,6 @@ dotnet test
 
 ## ⚠️ Notes
 
-- Windows-focused: `install`/`uninstall` edit the Windows user `PATH`, and the app waits for Enter before exiting.
+- The app waits for Enter before exiting.
 - Files are only renamed, never moved between folders or converted.
 - Existing files are never overwritten; a counter is appended instead.
