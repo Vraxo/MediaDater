@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public class FileNameGenerator(string directoryPath)
 {

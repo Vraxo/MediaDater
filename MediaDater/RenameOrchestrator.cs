@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public static class RenameOrchestrator
 {

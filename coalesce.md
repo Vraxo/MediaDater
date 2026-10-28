@@ -1,4 +1,4 @@
-### `LocalSendRenamer\CaptureDateExtractor.cs`
+### `MediaDater\CaptureDateExtractor.cs`
 
 ```csharp
 using MetadataExtractor;
@@ -7,7 +7,7 @@ using MetadataExtractor.Formats.QuickTime;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public partial class CaptureDateExtractor
 {
@@ -131,12 +131,12 @@ public partial class CaptureDateExtractor
 
 ---
 
-### `LocalSendRenamer\ConsoleLogger.cs`
+### `MediaDater\ConsoleLogger.cs`
 
 ```csharp
 using Spectre.Console;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public static class ConsoleLogger
 {
@@ -187,10 +187,10 @@ public static class ConsoleLogger
 
 ---
 
-### `LocalSendRenamer\DateValidator.cs`
+### `MediaDater\DateValidator.cs`
 
 ```csharp
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public static class DateValidator
 {
@@ -221,22 +221,22 @@ public static class DateValidator
 
 ---
 
-### `LocalSendRenamer\FileEntry.cs`
+### `MediaDater\FileEntry.cs`
 
 ```csharp
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public record FileEntry(string Path, DateTime CaptureTime);
 ```
 
 ---
 
-### `LocalSendRenamer\FileNameGenerator.cs`
+### `MediaDater\FileNameGenerator.cs`
 
 ```csharp
 using System.Globalization;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public class FileNameGenerator(string directoryPath)
 {
@@ -310,22 +310,22 @@ public class FileNameGenerator(string directoryPath)
 
 ---
 
-### `LocalSendRenamer\FileRenameInfo.cs`
+### `MediaDater\FileRenameInfo.cs`
 
 ```csharp
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public record FileRenameInfo(string OriginalPath, string NewPath);
 ```
 
 ---
 
-### `LocalSendRenamer\FileScanner.cs`
+### `MediaDater\FileScanner.cs`
 
 ```csharp
 using System.Text.RegularExpressions;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public static partial class FileScanner
 {
@@ -408,7 +408,7 @@ public static partial class FileScanner
 
 ---
 
-### `LocalSendRenamer\LocalSendRenamer.csproj`
+### `MediaDater\MediaDater.csproj`
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -437,12 +437,12 @@ public static partial class FileScanner
 
 ---
 
-### `LocalSendRenamer\ManifestManager.cs`
+### `MediaDater\ManifestManager.cs`
 
 ```csharp
 using System.Text.Json;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public static class ManifestManager
 {
@@ -484,10 +484,10 @@ public static class ManifestManager
 
 ---
 
-### `LocalSendRenamer\PathInstaller.cs`
+### `MediaDater\PathInstaller.cs`
 
 ```csharp
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public static class PathInstaller
 {
@@ -552,18 +552,18 @@ public static class PathInstaller
 
 ---
 
-### `LocalSendRenamer\Program.cs`
+### `MediaDater\Program.cs`
 
 ```csharp
 using System.CommandLine;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 internal static class Program
 {
     private static async Task<int> Main(string[] args)
     {
-        RootCommand rootCommand = new("LocalSendRenamer – rename media files using Persian calendar capture dates");
+        RootCommand rootCommand = new("MediaDater – rename media files using Persian calendar capture dates");
 
         Command renameCommand = new("rename", "Rename files in a directory");
 
@@ -614,20 +614,20 @@ internal static class Program
 
 ---
 
-### `LocalSendRenamer\RenameBatch.cs`
+### `MediaDater\RenameBatch.cs`
 
 ```csharp
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public record RenameBatch(string Directory, IReadOnlyList<FileRenameInfo> Renames);
 ```
 
 ---
 
-### `LocalSendRenamer\RenameExecutor.cs`
+### `MediaDater\RenameExecutor.cs`
 
 ```csharp
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public static class RenameExecutor
 {
@@ -665,12 +665,12 @@ public static class RenameExecutor
 
 ---
 
-### `LocalSendRenamer\RenameOrchestrator.cs`
+### `MediaDater\RenameOrchestrator.cs`
 
 ```csharp
 using System.Diagnostics;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public static class RenameOrchestrator
 {
@@ -766,10 +766,10 @@ public static class RenameOrchestrator
 
 ---
 
-### `LocalSendRenamer\RenamerPlanner.cs`
+### `MediaDater\RenamerPlanner.cs`
 
 ```csharp
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public class RenamePlanner
 {
@@ -839,10 +839,10 @@ public class RenamePlanner
 
 ---
 
-### `LocalSendRenamer\UndoCommand.cs`
+### `MediaDater\UndoCommand.cs`
 
 ```csharp
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public static class UndoCommand
 {
@@ -911,13 +911,13 @@ public static class UndoCommand
 
 ---
 
-### `LocalSendRenamer.Tests\CaptureDateExtractorTests.cs`
+### `MediaDater.Tests\CaptureDateExtractorTests.cs`
 
 ```csharp
 using FluentAssertions;
 using Xunit;
 
-namespace LocalSendRenamer.Tests;
+namespace MediaDater.Tests;
 
 public class CaptureDateExtractorTests
 {
@@ -970,13 +970,13 @@ public class CaptureDateExtractorTests
 
 ---
 
-### `LocalSendRenamer.Tests\DateValidatorTests.cs`
+### `MediaDater.Tests\DateValidatorTests.cs`
 
 ```csharp
 using FluentAssertions;
 using Xunit;
 
-namespace LocalSendRenamer.Tests;
+namespace MediaDater.Tests;
 
 public class DateValidatorTests
 {
@@ -1050,13 +1050,13 @@ public class DateValidatorTests
 
 ---
 
-### `LocalSendRenamer.Tests\FileNameGeneratorTests.cs`
+### `MediaDater.Tests\FileNameGeneratorTests.cs`
 
 ```csharp
 using FluentAssertions;
 using Xunit;
 
-namespace LocalSendRenamer.Tests;
+namespace MediaDater.Tests;
 
 public class FileNameGeneratorTests : IDisposable
 {
@@ -1146,13 +1146,13 @@ public class FileNameGeneratorTests : IDisposable
 
 ---
 
-### `LocalSendRenamer.Tests\FileScannerFallbackTests.cs`
+### `MediaDater.Tests\FileScannerFallbackTests.cs`
 
 ```csharp
 using FluentAssertions;
 using Xunit;
 
-namespace LocalSendRenamer.Tests;
+namespace MediaDater.Tests;
 
 public class FileScannerFallbackTests : IDisposable
 {
@@ -1235,7 +1235,7 @@ public class FileScannerFallbackTests : IDisposable
 
 ---
 
-### `LocalSendRenamer.Tests\LocalSendRenamer.Tests.csproj`
+### `MediaDater.Tests\MediaDater.Tests.csproj`
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -1258,7 +1258,7 @@ public class FileScannerFallbackTests : IDisposable
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\LocalSendRenamer\LocalSendRenamer.csproj" />
+		<ProjectReference Include="..\MediaDater\MediaDater.csproj" />
 	</ItemGroup>
 
 </Project>
@@ -1266,13 +1266,13 @@ public class FileScannerFallbackTests : IDisposable
 
 ---
 
-### `LocalSendRenamer.Tests\ManifestManagerTests.cs`
+### `MediaDater.Tests\ManifestManagerTests.cs`
 
 ```csharp
 using FluentAssertions;
 using Xunit;
 
-namespace LocalSendRenamer.Tests;
+namespace MediaDater.Tests;
 
 public class ManifestManagerTests : IDisposable
 {
@@ -1369,13 +1369,13 @@ public class ManifestManagerTests : IDisposable
 
 ---
 
-### `LocalSendRenamer.Tests\RenamePlannerTests.cs`
+### `MediaDater.Tests\RenamePlannerTests.cs`
 
 ```csharp
 using FluentAssertions;
 using Xunit;
 
-namespace LocalSendRenamer.Tests;
+namespace MediaDater.Tests;
 
 public class RenamePlannerTests
 {
@@ -1497,13 +1497,13 @@ public class RenamePlannerTests
 
 ---
 
-### `LocalSendRenamer.Tests\UndoCommandTests.cs`
+### `MediaDater.Tests\UndoCommandTests.cs`
 
 ```csharp
 using FluentAssertions;
 using Xunit;
 
-namespace LocalSendRenamer.Tests;
+namespace MediaDater.Tests;
 
 public class UndoCommandTests : IDisposable
 {

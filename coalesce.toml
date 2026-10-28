@@ -2,8 +2,8 @@ OutputFilePath = "coalesce.md"
 
 SourceDirectoryPaths = [
   ".",
-  "LocalSendRenamer",
-  "LocalSendRenamer.Tests"
+  "MediaDater",
+  "MediaDater.Tests"
 ]
 
 IncludeExtensions = [

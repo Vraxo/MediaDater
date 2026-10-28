@@ -1,8 +1,8 @@
-# 📷 LocalSendRenamer
+# 📷 MediaDater
 
 Renames photos and videos to their capture date and time in the Persian (Jalali) calendar, so a folder of `IMG_20240512_143045.jpg` becomes `1403-02-23_14-30-45.jpg`.
 
-It was written to clean up files received over LocalSend, whose names stop being useful in transit. Nothing in the code is specific to LocalSend — it works on any folder of media files.
+It started as a way to clean up files received over LocalSend, where names like `IMG_20240512_143045.jpg` survive the transfer but stop telling you anything once they're off the phone. Nothing in it is specific to LocalSend: point it at any folder of photos and videos.
 
 ## 🎯 What it does
 
@@ -19,7 +19,7 @@ It was written to clean up files received over LocalSend, whose names stop being
 ## 🛠️ Build
 
 ```powershell
-dotnet build LocalSendRenamer.slnx
+dotnet build MediaDater.slnx
 ```
 
 Build output goes to `artifacts/<Configuration>/`.
@@ -28,16 +28,16 @@ Build output goes to `artifacts/<Configuration>/`.
 
 | Command | Description |
 | --- | --- |
-| `LocalSendRenamer` | Rename files in the current directory |
-| `LocalSendRenamer rename [directory]` | Rename files in `directory` (defaults to the current one) |
-| `LocalSendRenamer rename [directory] --dry-run` | List what would be renamed, change nothing |
-| `LocalSendRenamer undo` | Revert the last run recorded in the current directory |
-| `LocalSendRenamer install` | Add the executable's folder to the user `PATH` |
-| `LocalSendRenamer uninstall` | Remove that folder from the user `PATH` |
+| `MediaDater` | Rename files in the current directory |
+| `MediaDater rename [directory]` | Rename files in `directory` (defaults to the current one) |
+| `MediaDater rename [directory] --dry-run` | List what would be renamed, change nothing |
+| `MediaDater undo` | Revert the last run recorded in the current directory |
+| `MediaDater install` | Add the executable's folder to the user `PATH` |
+| `MediaDater uninstall` | Remove that folder from the user `PATH` |
 
 ```powershell
-dotnet run --project LocalSendRenamer -- rename "D:\Photos" --dry-run
-dotnet run --project LocalSendRenamer -- rename "D:\Photos"
+dotnet run --project MediaDater -- rename "D:\Photos" --dry-run
+dotnet run --project MediaDater -- rename "D:\Photos"
 ```
 
 Sample output:

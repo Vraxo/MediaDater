@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public static class ManifestManager
 {

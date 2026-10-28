@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Xunit;
 
-namespace LocalSendRenamer.Tests;
+namespace MediaDater.Tests;
 
 public class FileNameGeneratorTests : IDisposable
 {

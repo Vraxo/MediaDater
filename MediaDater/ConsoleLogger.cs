@@ -1,6 +1,6 @@
 ﻿using Spectre.Console;
 
-namespace LocalSendRenamer;
+namespace MediaDater;
 
 public static class ConsoleLogger
 {
