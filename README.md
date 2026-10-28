@@ -22,7 +22,7 @@ It started as a way to clean up files received over LocalSend, where names like 
 dotnet build MediaDater.slnx
 ```
 
-Build output goes to `artifacts/<Configuration>/`.
+Build output goes to the SDK's artifacts layout, `artifacts/bin/<project>/<configuration>/`, configured once in `Directory.Build.props`.
 
 ## 🚀 Usage
 
